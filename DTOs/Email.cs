@@ -1,17 +1,17 @@
 ﻿using System.Text.RegularExpressions;
 namespace CarWebsiteBackend.DTOs;
 
-public class Email
+public record Email
 {
     public string address { get; init; }
 
-    public Email(string _address)
+    public Email(string address)
     {
-        if (!IsValidEmail(_address))
+        if (!IsValidEmail(address))
         {
             throw new ArgumentException("Invalid email address");
         }
-        address = _address;
+        this.address = address;
     }
 
 
