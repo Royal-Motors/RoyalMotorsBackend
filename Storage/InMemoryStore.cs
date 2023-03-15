@@ -1,11 +1,9 @@
 ﻿using CarWebsiteBackend.Interfaces;
 using CarWebsiteBackend.DTOs;
-<<<<<<< HEAD
 using CarWebsiteBackend.Exceptions;
 
-=======
+
 using Microsoft.AspNetCore.Mvc;
->>>>>>> origin/AccountGet
 namespace CarWebsiteBackend.Storage;
 
 public class InMemoryStore : IAccountInterface
@@ -22,18 +20,18 @@ public class InMemoryStore : IAccountInterface
 
         throw new ProfileAlreadyExistsException();
     }
-    public Task <Account?> GetAccount(Email email){
+    public Task <Account?> GetAccount(string email){
         if (!accountDict.ContainsKey(email))
         {
-            throw new ArgumentException("This email doesn't exist!");
+            throw new ProfileNotFoundException();
         }
         return Task.FromResult<Account?>(accountDict[email]);
     }
 
-    public Task DeleteAccount(Email email){
+    public Task DeleteAccount(string email){
         if (!accountDict.ContainsKey(email))
         {
-            throw new ArgumentException("This email doesn't exist!");
+            throw new ProfileNotFoundException();
         }
         accountDict.Remove(email);
         return Task.CompletedTask;

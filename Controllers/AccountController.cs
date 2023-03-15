@@ -16,6 +16,25 @@ public class AccountController : ControllerBase
         this.accountInterface = accountInterface;
     }
 
+        private bool IsValidEmail(string email)
+    {
+        if (string.IsNullOrWhiteSpace(email))
+        {
+            return false;
+        }
+        try
+        {
+            // use regex to validate email format
+            return Regex.IsMatch(email,
+                @"^[^@\s]+@[^@\s]+\.[^@\s]+$",
+                RegexOptions.IgnoreCase, TimeSpan.FromMilliseconds(250));
+        }
+        catch (RegexMatchTimeoutException)
+        {
+            return false;
+        }
+    }
+
 
     [HttpPost("sign_up")]
     public async Task<ActionResult<Account>> SignUp(Account account)
@@ -36,53 +55,40 @@ public class AccountController : ControllerBase
 
     }
 
+// needs cleaning up and add login API
 
-    private bool IsValidEmail(string email)
-    {
-        if (string.IsNullOrWhiteSpace(email))
+    [HttpGet("get/{email}")]
+        public async Task<ActionResult<Account>> GetAccounts(string email)
         {
-            return false;
+            if(!IsValidEmail(email))
+        {
+            return BadRequest("Invalid email format.");
         }
-        try
-        {
-            // use regex to validate email format
-            return Regex.IsMatch(email,
-                @"^[^@\s]+@[^@\s]+\.[^@\s]+$",
-                RegexOptions.IgnoreCase, TimeSpan.FromMilliseconds(250));
-        }
-        catch (RegexMatchTimeoutException)
-        {
-            return false;
-        }
-    }
-
-    [HttpGet("get/{address}")]
-        public async Task<ActionResult<Account>> GetAccounts(string address)
-        {
-            Email email = new(address);
-            var account = await accountInterface.GetAccount(email);
-            if (account == null)
-            {
-                return NotFound();
-            }
+            //not really needed since this won't be called unless a user is signed in and opened his account
+            try{
+                var account = await accountInterface.GetAccount(email);
                 return account;
+            }
+            catch(ProfileNotFoundException e){
+                return Conflict("Email does not exist!");
+            }
         }
 
-    [HttpDelete("delete/{address}")]
-        public async Task<IActionResult> DeleteAccountsItem(string address)
+    [HttpDelete("delete/{email}")]
+        public async Task<IActionResult> DeleteAccountsItem(string email)
         {
-            Email email = new(address);
-            var account = await accountInterface.GetAccount(email);
-            if (email == null)
-            {
-                return NotFound();
-            }
+            if(!IsValidEmail(email))
+        {
+            return BadRequest("Invalid email format.");
+        }
             try{
                 await accountInterface.DeleteAccount(email);
                 return NoContent();
             }
-            catch{
-                return BadRequest("Email doesn't exist.");
+            //also not really needed since an account will only be deleted when the user presses on delete account in his own profile 
+            catch(ProfileNotFoundException e){
+
+                return Conflict("Email does not exist!");
             }
 
         }
