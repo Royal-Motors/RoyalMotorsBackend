@@ -1,10 +1,12 @@
 ﻿using CarWebsiteBackend.Interfaces;
 using CarWebsiteBackend.DTOs;
+using CarWebsiteBackend.Exceptions;
+
 namespace CarWebsiteBackend.Storage;
 
 public class InMemoryStore : IAccountInterface
 {
-    private readonly Dictionary<Email, Account> accountDict = new();
+    private readonly Dictionary<string, Account> accountDict = new();
 
     public Task AddAccount(Account account)
     {
@@ -14,6 +16,6 @@ public class InMemoryStore : IAccountInterface
             return Task.CompletedTask;
         }
 
-        throw new ArgumentException("Email already taken. Sign up with another email, or sign in.");
+        throw new ProfileAlreadyExistsException();
     }
 }

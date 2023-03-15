@@ -1,4 +1,5 @@
 ﻿using CarWebsiteBackend.DTOs;
+using CarWebsiteBackend.Exceptions;
 using CarWebsiteBackend.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -30,7 +31,7 @@ public class AccountControllerTests : IClassFixture<WebApplicationFactory<Progra
             });
         }).CreateClient();
 
-        testAccount = new Account(new Email("foo.bar@example.com"), "password", "Foo", "Bar");
+        testAccount = new Account("foo.bar@example.com", "password", "Foo", "Bar");
     }
 
     [Fact]
@@ -58,34 +59,40 @@ public class AccountControllerTests : IClassFixture<WebApplicationFactory<Progra
     public async Task SignUp_EmailTaken()
     {
         // Arrange
-        accountStoreMock.Setup(m => m.AddAccount(testAccount)).Throws(new Exception("Email taken"));
+        accountStoreMock.Setup(m => m.AddAccount(testAccount)).Throws(new ProfileAlreadyExistsException());
 
         // Act
         var response = await httpClient.PostAsync("/account/sign_up",
             new StringContent(JsonConvert.SerializeObject(testAccount), Encoding.Default, "application/json"));
 
         // Assert
-        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        Assert.Equal(HttpStatusCode.Conflict, response.StatusCode);
         accountStoreMock.Verify(m => m.AddAccount(testAccount), Times.Once);
     }
 
     [Theory]
-    [InlineData("", "Foo", "Bar")]
-    [InlineData(" ", "Foo", "Bar")]
-    [InlineData(null, "Foo", "Bar")]
-    [InlineData("pass", "", "Bar")]
-    [InlineData("pass", " ", "Bar")]
-    [InlineData("pass", null, "Bar")]
-    [InlineData("pass", "Foo", "")]
-    [InlineData("pass", "Foo", " ")]
-    [InlineData("pass", "Foo", null)]
-    public async Task SignUp_InvalidArguments(string password, string firstname, string lastname)
+    [InlineData("", "pass", "Foo", "Bar")]
+    [InlineData(" ", "pass", "Foo", "Bar")]
+    [InlineData(null, "pass", "Foo", "Bar")]
+    [InlineData("Invalid-email", "pass", "Foo", "Bar")]
+    [InlineData("foo.bar@example.com", "", "Foo", "Bar")]
+    [InlineData("foo.bar@example.com", " ", "Foo", "Bar")]
+    [InlineData("foo.bar@example.com", null, "Foo", "Bar")]
+    [InlineData("foo.bar@example.com", "pass", "", "Bar")]
+    [InlineData("foo.bar@example.com", "pass", " ", "Bar")]
+    [InlineData("foo.bar@example.com", "pass", null, "Bar")]
+    [InlineData("foo.bar@example.com", "pass", "Foo", "")]
+    [InlineData("foo.bar@example.com", "pass", "Foo", " ")]
+    [InlineData("foo.bar@example.com", "pass", "Foo", null)]
+    public async Task SignUp_InvalidArguments(string email, string password, string firstname, string lastname)
     {
-        Account invalidAccount = new(testAccount.email, password,firstname, lastname);
+        Account invalidAccount = new(email, password,firstname, lastname);
         var response = await httpClient.PostAsync("/account/sign_up",
             new StringContent(JsonConvert.SerializeObject(invalidAccount), Encoding.Default, "application/json"));
 
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
         accountStoreMock.Verify(mock => mock.AddAccount(invalidAccount), Times.Never);
     }
+
+
 }
