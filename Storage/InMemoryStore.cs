@@ -2,6 +2,8 @@
 using CarWebsiteBackend.DTOs;
 using CarWebsiteBackend.Exceptions;
 
+
+using Microsoft.AspNetCore.Mvc;
 namespace CarWebsiteBackend.Storage;
 
 public class InMemoryStore : IAccountInterface
@@ -17,5 +19,21 @@ public class InMemoryStore : IAccountInterface
         }
 
         throw new ProfileAlreadyExistsException();
+    }
+    public Task <Account?> GetAccount(string email){
+        if (!accountDict.ContainsKey(email))
+        {
+            throw new ProfileNotFoundException();
+        }
+        return Task.FromResult<Account?>(accountDict[email]);
+    }
+
+    public Task DeleteAccount(string email){
+        if (!accountDict.ContainsKey(email))
+        {
+            throw new ProfileNotFoundException();
+        }
+        accountDict.Remove(email);
+        return Task.CompletedTask;
     }
 }

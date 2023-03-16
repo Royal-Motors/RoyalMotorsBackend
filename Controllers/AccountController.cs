@@ -16,6 +16,25 @@ public class AccountController : ControllerBase
         this.accountInterface = accountInterface;
     }
 
+        private bool IsValidEmail(string email)
+    {
+        if (string.IsNullOrWhiteSpace(email))
+        {
+            return false;
+        }
+        try
+        {
+            // use regex to validate email format
+            return Regex.IsMatch(email,
+                @"^[^@\s]+@[^@\s]+\.[^@\s]+$",
+                RegexOptions.IgnoreCase, TimeSpan.FromMilliseconds(250));
+        }
+        catch (RegexMatchTimeoutException)
+        {
+            return false;
+        }
+    }
+
 
     [HttpPost("sign_up")]
     public async Task<ActionResult<Account>> SignUp(Account account)
@@ -36,23 +55,42 @@ public class AccountController : ControllerBase
 
     }
 
+// needs cleaning up and add login API
 
-    private bool IsValidEmail(string email)
-    {
-        if (string.IsNullOrWhiteSpace(email))
+    [HttpGet("get/{email}")]
+        public async Task<ActionResult<Account>> GetAccounts(string email)
         {
-            return false;
-        }
-        try
+            if(!IsValidEmail(email))
         {
-            // use regex to validate email format
-            return Regex.IsMatch(email,
-                @"^[^@\s]+@[^@\s]+\.[^@\s]+$",
-                RegexOptions.IgnoreCase, TimeSpan.FromMilliseconds(250));
+            return BadRequest("Invalid email format.");
         }
-        catch (RegexMatchTimeoutException)
+            //not really needed since this won't be called unless a user is signed in and opened his account
+            try{
+                var account = await accountInterface.GetAccount(email);
+                return account;
+            }
+            catch(ProfileNotFoundException e){
+                return NotFound();
+            }
+        }
+
+    [HttpDelete("delete/{email}")]
+        public async Task<IActionResult> DeleteAccountsItem(string email)
         {
-            return false;
+            if(!IsValidEmail(email))
+        {
+            return BadRequest("Invalid email format.");
         }
-    }
+            try{
+                await accountInterface.DeleteAccount(email);
+                return NoContent();
+            }
+            //also not really needed since an account will only be deleted when the user presses on delete account in his own profile
+            catch(ProfileNotFoundException e){
+
+                return NotFound();
+            }
+
+        }
 }
+//HELLO
