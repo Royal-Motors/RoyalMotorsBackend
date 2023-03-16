@@ -58,7 +58,7 @@ public class AccountController : ControllerBase
 // needs cleaning up and add login API
 
     [HttpGet("get/{email}")]
-        public async Task<ActionResult<Account>> GetAccounts(string email)
+        public async Task<ActionResult<Account>> OpenAccount(string email)
         {
             if(!IsValidEmail(email))
         {
@@ -75,7 +75,7 @@ public class AccountController : ControllerBase
         }
 
     [HttpDelete("delete/{email}")]
-        public async Task<IActionResult> DeleteAccountsItem(string email)
+        public async Task<IActionResult> DeleteAccount(string email)
         {
             if(!IsValidEmail(email))
         {
@@ -92,5 +92,24 @@ public class AccountController : ControllerBase
             }
 
         }
+
+    [HttpGet("Sign_in")]
+        public async Task<ActionResult<Account>> SignIn(string email, string pass)
+        {
+            if(!IsValidEmail(email))
+        {
+            return BadRequest("Invalid email format.");
+        }
+            try{
+                var account = await accountInterface.GetAccount(email);
+                if (account.password == pass){
+                    return account;
+                }
+                return BadRequest("Wrong password!");
+            }
+            catch(ProfileNotFoundException e){
+                return BadRequest("Email doesn't exist!");
+            }
+        }
 }
-//HELLO
+//:>
