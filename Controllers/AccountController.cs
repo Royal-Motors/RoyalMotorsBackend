@@ -93,8 +93,12 @@ public class AccountController : ControllerBase
     }
 
     [HttpPut("edit/{email}")]
-    public async Task<ActionResult<Account>> Edit(EditedAcc editedAcc, String email)
+    public async Task<ActionResult<Account>> Edit(EditedAcc editedAcc, string email)
     {
+        if (!IsValidEmail(email))
+        {
+            return BadRequest("Invalid email format");
+        }
         try
         {
             Account new_acc = new Account(email, editedAcc.password, editedAcc.firstname, editedAcc.lastname);

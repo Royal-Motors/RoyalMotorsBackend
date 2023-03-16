@@ -20,6 +20,7 @@ public class AccountControllerTests : IClassFixture<WebApplicationFactory<Progra
     private readonly HttpClient httpClient;
 
     private readonly Account testAccount;
+    private readonly EditedAcc testEdit;
 
     public AccountControllerTests(WebApplicationFactory<Program> factory)
     {
@@ -32,6 +33,7 @@ public class AccountControllerTests : IClassFixture<WebApplicationFactory<Progra
         }).CreateClient();
 
         testAccount = new Account("foo.bar@example.com", "password", "Foo", "Bar");
+        testEdit = new EditedAcc("password2", "Foo2", "Bar2");
     }
 
     [Fact]
@@ -160,5 +162,72 @@ public class AccountControllerTests : IClassFixture<WebApplicationFactory<Progra
         var response = await httpClient.GetAsync($"/account/{badEmail}");
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
         accountStoreMock.Verify(mock => mock.GetAccount(badEmail), Times.Never);
+    }
+
+
+    [Fact]
+    public async Task EditAccount_ValidEmail()
+    {
+        // Arrange
+        Account checkAccount = new(testAccount.email, testEdit.password, testEdit.firstname, testEdit.lastname);
+        accountStoreMock.Setup(m => m.ReplaceAccount(checkAccount)).Returns(Task.CompletedTask);
+        // Act
+        var response = await httpClient.PutAsync($"/account/edit/{checkAccount.email}",
+            new StringContent(JsonConvert.SerializeObject(testEdit), Encoding.Default, "application/json"));
+
+        // Assert
+        Assert.Equal(HttpStatusCode.Created, response.StatusCode);
+
+        var json = await response.Content.ReadAsStringAsync();
+        var uploadedAccount = JsonConvert.DeserializeObject<Account>(json);
+
+        Assert.Equal(checkAccount, uploadedAccount);
+
+        accountStoreMock.Verify(m => m.ReplaceAccount(checkAccount), Times.Once);
+    }
+
+    [Theory]
+    [InlineData("", "Foo", "Bar")]
+    [InlineData(" ", "Foo", "Bar")]
+    [InlineData(null, "Foo", "Bar")]
+    [InlineData("pass", "", "Bar")]
+    [InlineData("pass", " ", "Bar")]
+    [InlineData("pass", null, "Bar")]
+    [InlineData("pass", "Foo", "")]
+    [InlineData("pass", "Foo", " ")]
+    [InlineData("pass", "Foo", null)]
+    public async Task EditAccount_InvalidArgs(string password, string firstname, string lastname)
+    {
+        Account invalidAccount = new(testAccount.email, password, firstname, lastname);
+        var response = await httpClient.PutAsync($"/account/edit/{invalidAccount.email}",
+            new StringContent(JsonConvert.SerializeObject(invalidAccount), Encoding.Default, "application/json"));
+
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        accountStoreMock.Verify(mock => mock.ReplaceAccount(invalidAccount), Times.Never);
+    }
+
+    [Fact]
+    public async Task EditAccount_InvalidEmail()
+    {
+        string badEmail = "invalid-email";
+        Account invalidAccount = new(badEmail, testEdit.password, testEdit.firstname, testEdit.lastname);
+
+        var response = await httpClient.PutAsync($"/account/edit/{badEmail}",
+             new StringContent(JsonConvert.SerializeObject(invalidAccount), Encoding.Default, "application/json"));
+
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        accountStoreMock.Verify(mock => mock.AddAccount(invalidAccount), Times.Never);
+    }
+
+    [Fact]
+    public async Task EditAccount_NotFound()
+    {
+        accountStoreMock.Setup(m => m.ReplaceAccount(testAccount)).Throws(new ProfileNotFoundException());
+        
+        var response = await httpClient.PutAsync($"/account/edit/{testAccount.email}",
+             new StringContent(JsonConvert.SerializeObject(testAccount), Encoding.Default, "application/json"));
+
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+        accountStoreMock.Verify(mock => mock.ReplaceAccount(testAccount), Times.Once);
     }
 }
