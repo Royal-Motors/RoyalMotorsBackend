@@ -111,4 +111,22 @@ public class AccountController : ControllerBase
             return NotFound($"Account with email {email} not found.");
         }
     }
+    [HttpGet("Sign_in")]
+    public async Task<ActionResult<Account>> SignIn(string email, string pass)
+    {
+        if(!IsValidEmail(email))
+    {
+        return BadRequest("Invalid email format.");
+    }
+        try{
+            var account = await accountInterface.GetAccount(email);
+            if (account.password == pass){
+                return account;
+            }
+            return BadRequest("Wrong password!");
+        }
+        catch(ProfileNotFoundException e){
+            return BadRequest("Email doesn't exist!");
+        }
+    }
 }
