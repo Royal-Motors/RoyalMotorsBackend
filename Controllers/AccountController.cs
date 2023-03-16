@@ -70,7 +70,7 @@ public class AccountController : ControllerBase
                 return account;
             }
             catch(ProfileNotFoundException e){
-                return Conflict("Email does not exist!");
+                return NotFound();
             }
         }
 
@@ -85,10 +85,10 @@ public class AccountController : ControllerBase
                 await accountInterface.DeleteAccount(email);
                 return NoContent();
             }
-            //also not really needed since an account will only be deleted when the user presses on delete account in his own profile 
+            //also not really needed since an account will only be deleted when the user presses on delete account in his own profile
             catch(ProfileNotFoundException e){
 
-                return Conflict("Email does not exist!");
+                return NotFound();
             }
 
         }
