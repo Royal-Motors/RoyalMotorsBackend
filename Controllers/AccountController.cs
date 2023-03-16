@@ -91,4 +91,21 @@ public class AccountController : ControllerBase
         }
 
     }
+
+    [HttpPut("edit/{email}")]
+    public async Task<ActionResult<Account>> Edit(EditedAcc editedAcc, String email)
+    {
+        try
+        {
+            await accountInterface.DeleteAccount(email);
+            Account new_acc = new Account(email, editedAcc.password, editedAcc.firstname, editedAcc.lastname);
+            //await is related to async, wait it to sync.  
+            await accountInterface.AddAccount(new_acc);
+            return CreatedAtAction(nameof(Edit), new { email = new_acc.email }, new_acc);
+        }
+        catch (ProfileNotFoundException e)
+        {
+            return NotFound($"Account with email {email} not found.");
+        }
+    }
 }
