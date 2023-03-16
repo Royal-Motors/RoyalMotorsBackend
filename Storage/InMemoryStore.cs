@@ -42,9 +42,9 @@ public class InMemoryStore : IAccountInterface
         if (!accountDict.ContainsKey(account.email))
         {
             accountDict[account.email] = account;
-            return Task.CompletedTask;
+            throw new ProfileNotFoundException();
         }
-
-        throw new ProfileAlreadyExistsException();
+        accountDict[account.email] = account;
+        return Task.CompletedTask;
     }
 }
