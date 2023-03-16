@@ -97,10 +97,9 @@ public class AccountController : ControllerBase
     {
         try
         {
-            await accountInterface.DeleteAccount(email);
             Account new_acc = new Account(email, editedAcc.password, editedAcc.firstname, editedAcc.lastname);
             //await is related to async, wait it to sync.  
-            await accountInterface.AddAccount(new_acc);
+            await accountInterface.ReplaceAccount(new_acc);
             return CreatedAtAction(nameof(Edit), new { email = new_acc.email }, new_acc);
         }
         catch (ProfileNotFoundException e)

@@ -36,4 +36,15 @@ public class InMemoryStore : IAccountInterface
         accountDict.Remove(email);
         return Task.CompletedTask;
     }
+
+    public Task ReplaceAccount(Account account)
+    {
+        if (!accountDict.ContainsKey(account.email))
+        {
+            accountDict[account.email] = account;
+            return Task.CompletedTask;
+        }
+
+        throw new ProfileAlreadyExistsException();
+    }
 }
