@@ -94,5 +94,71 @@ public class AccountControllerTests : IClassFixture<WebApplicationFactory<Progra
         accountStoreMock.Verify(mock => mock.AddAccount(invalidAccount), Times.Never);
     }
 
+    [Fact]
+    public async Task DeleteAccount_Valid()
+    {
+        accountStoreMock.Setup(m => m.DeleteAccount(testAccount.email)).Returns(Task.CompletedTask);
 
+        var response = await httpClient.DeleteAsync($"/account/delete/{testAccount.email}");
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+
+        accountStoreMock.Verify(mock => mock.DeleteAccount(testAccount.email), Times.Once);
+    }
+
+    [Fact]
+    public async Task DeleteAccount_NotFound()
+    {
+        accountStoreMock.Setup(m => m.DeleteAccount(testAccount.email)).Throws(new ProfileNotFoundException());
+
+        var response = await httpClient.DeleteAsync($"/account/delete/{testAccount.email}");
+
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+
+        accountStoreMock.Verify(mock => mock.DeleteAccount(testAccount.email), Times.Once);
+    }
+
+    [Fact]
+    public async Task DeleteAccount_InvalidEmail()
+    {
+        // no need to check for null, empty, or white space -- guaranteed from URL
+        string badEmail = "invalid-email";
+        var response = await httpClient.DeleteAsync($"/account/delete/{badEmail}");
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        accountStoreMock.Verify(mock => mock.DeleteAccount(badEmail), Times.Never);
+    }
+
+    [Fact]
+    public async Task GetAccount_Valid()
+    {
+        accountStoreMock.Setup(m => m.GetAccount(testAccount.email)).ReturnsAsync(testAccount);
+
+        var response = await httpClient.GetAsync($"/account/{testAccount.email}");
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+
+        accountStoreMock.Verify(mock => mock.GetAccount(testAccount.email), Times.Once);
+    }
+
+    [Fact]
+    public async Task GetAccount_NotFound()
+    {
+        accountStoreMock.Setup(m => m.GetAccount(testAccount.email)).Throws(new ProfileNotFoundException());
+
+        var response = await httpClient.GetAsync($"/account/{testAccount.email}");
+
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+
+        accountStoreMock.Verify(mock => mock.GetAccount(testAccount.email), Times.Once);
+    }
+
+    [Fact]
+    public async Task GetAccount_InvalidEmail()
+    {
+        // no need to check for null, empty, or white space -- guaranteed from URL
+        string badEmail = "invalid-email";
+        var response = await httpClient.GetAsync($"/account/{badEmail}");
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        accountStoreMock.Verify(mock => mock.GetAccount(badEmail), Times.Never);
+    }
 }

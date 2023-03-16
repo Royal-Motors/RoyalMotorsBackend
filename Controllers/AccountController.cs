@@ -43,7 +43,6 @@ public class AccountController : ControllerBase
         {
             return BadRequest("Invalid email format.");
         }
-
         try
         {
             await accountInterface.AddAccount(account);
@@ -57,40 +56,39 @@ public class AccountController : ControllerBase
 
 // needs cleaning up and add login API
 
-    [HttpGet("get/{email}")]
-        public async Task<ActionResult<Account>> GetAccounts(string email)
-        {
-            if(!IsValidEmail(email))
+    [HttpGet("{email}")]
+    public async Task<ActionResult<Account>> GetAccount(string email)
+    {
+        if(!IsValidEmail(email))
         {
             return BadRequest("Invalid email format.");
         }
-            //not really needed since this won't be called unless a user is signed in and opened his account
-            try{
-                var account = await accountInterface.GetAccount(email);
-                return account;
-            }
-            catch(ProfileNotFoundException e){
-                return NotFound();
-            }
+        //not really needed since this won't be called unless a user is signed in and opened his account
+        try{
+            var account = await accountInterface.GetAccount(email);
+            return Ok(account);
         }
+        catch(ProfileNotFoundException e){
+            return NotFound($"Account with email {email} not found.");
+        }
+    }
 
     [HttpDelete("delete/{email}")]
-        public async Task<IActionResult> DeleteAccountsItem(string email)
-        {
-            if(!IsValidEmail(email))
+    public async Task<IActionResult> DeleteAccount(string email)
+    {
+        if(!IsValidEmail(email))
         {
             return BadRequest("Invalid email format.");
         }
-            try{
-                await accountInterface.DeleteAccount(email);
-                return NoContent();
-            }
-            //also not really needed since an account will only be deleted when the user presses on delete account in his own profile
-            catch(ProfileNotFoundException e){
-
-                return NotFound();
-            }
-
+        try{
+            await accountInterface.DeleteAccount(email);
+            return Ok("Account successfully deleted");
         }
+        //also not really needed since an account will only be deleted when the user presses on delete account in his own profile
+        catch(ProfileNotFoundException e){
+
+            return NotFound($"Account with email {email} not found.");
+        }
+
+    }
 }
-//HELLO
