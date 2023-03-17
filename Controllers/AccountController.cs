@@ -129,7 +129,8 @@ public class AccountController : ControllerBase
             }
             return Unauthorized("Incorrect password.");
         }
-        catch(ProfileNotFoundException e){
+        catch(ProfileNotFoundException e)
+        {
             return NotFound($"Account with email {email} not found.");
         }
     }
