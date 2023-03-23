@@ -52,6 +52,62 @@ namespace CarWebsiteBackend.Migrations
 
                     b.ToTable("Accounts");
                 });
+
+            modelBuilder.Entity("CarWebsiteBackend.DTOs.Car", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("color")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("image_id_list")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("make")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("mileage")
+                        .HasColumnType("int");
+
+                    b.Property<string>("model")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("price")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("used")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("video_id")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("year")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("name")
+                        .IsUnique();
+
+                    b.ToTable("Cars");
+                });
 #pragma warning restore 612, 618
         }
     }

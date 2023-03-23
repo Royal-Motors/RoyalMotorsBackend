@@ -12,9 +12,9 @@ namespace CarWebsiteBackend.DTOs
 {
     public record Car
     {
-        public Car([Required] string name, [Required] string make, [Required] string model, [Required] string year,
+        public Car([Required] string name, [Required] string make, [Required] string model, [Required] int year,
             [Required] string color, [Required] bool used, [Required] int price, [Optional] string description,
-            [Required] int mileage, [Optional] string[] image_id_list, [Optional] string video_id)
+            [Required] int mileage, [Optional] string image_id_list, [Optional] string video_id)
         {
             this.name = name;
             this.make = make;
@@ -33,13 +33,13 @@ namespace CarWebsiteBackend.DTOs
         public string name { get; set; }
         public string make { get; set; }
         public string model { get; set; }
-        public string year { get; set; }
+        public int year { get; set; }
         public string color { get; set; }
         public bool used { get; set; }
         public int price { get; set; }
         public string description { get; set; }
         public int mileage { get; set; }
-        public string[] image_id_list { get; set; }
+        public string image_id_list { get; set; }
         public string video_id { get; set; }
 
     }

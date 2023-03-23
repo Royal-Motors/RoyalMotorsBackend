@@ -12,12 +12,19 @@ namespace CarWebsiteBackend.Data
         }
 
         public DbSet<Account> Accounts { get; set; }
+        public DbSet<Car> Cars { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Account>()
                 .HasIndex(a => a.email)
                 .IsUnique();
+            modelBuilder.Entity<Car>()
+                .HasIndex(a => a.name)
+                .IsUnique();
         }
+
+
+
     }
 }
