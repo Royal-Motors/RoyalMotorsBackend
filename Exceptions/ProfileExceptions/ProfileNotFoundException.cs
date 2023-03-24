@@ -1,6 +1,6 @@
-﻿namespace CarWebsiteBackend.Exceptions
+﻿namespace CarWebsiteBackend.Exceptions.ProfileExceptions
 {
-    public class ProfileNotFoundException: Exception
+    public class ProfileNotFoundException : Exception
     {
         //Overriding the Message property
         public override string Message
