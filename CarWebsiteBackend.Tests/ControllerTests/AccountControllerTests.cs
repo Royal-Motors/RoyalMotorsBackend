@@ -1,5 +1,5 @@
 ﻿using CarWebsiteBackend.DTOs;
-using CarWebsiteBackend.Exceptions;
+using CarWebsiteBackend.Exceptions.ProfileExceptions;
 using CarWebsiteBackend.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Mvc.Testing;
