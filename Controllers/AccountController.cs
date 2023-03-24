@@ -2,7 +2,8 @@
 using CarWebsiteBackend.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.RegularExpressions;
-using CarWebsiteBackend.Exceptions;
+using CarWebsiteBackend.Exceptions.ProfileExceptions;
+
 namespace CarWebsiteBackend.Controllers;
 
 [ApiController]
