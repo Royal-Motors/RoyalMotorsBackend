@@ -25,7 +25,7 @@ namespace CarWebsiteBackend.DTOs
             this.price = price;                  //(integer, required)
             this.description = description;      //(string, optional)
             this.mileage = mileage;              //(integer, required for used cars)
-            this.image_id_list = image_id_list;  //(array of strings, optional)
+            this.image_id_list = image_id_list;  //(string, optional)
             this.video_id = video_id;            //(string, optional)
         }
 
