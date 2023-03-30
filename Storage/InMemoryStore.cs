@@ -1,6 +1,6 @@
 ﻿using CarWebsiteBackend.Interfaces;
 using CarWebsiteBackend.DTOs;
-using CarWebsiteBackend.Exceptions;
+using CarWebsiteBackend.Exceptions.ProfileExceptions;
 
 
 using Microsoft.AspNetCore.Mvc;
