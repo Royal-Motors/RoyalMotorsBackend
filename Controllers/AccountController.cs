@@ -48,8 +48,12 @@ public class AccountController : ControllerBase
             await accountInterface.AddAccount(account);
             return CreatedAtAction(nameof(SignUp), new { email = account.email }, account);
         }
-        catch(ProfileAlreadyExistsException e){
-            return Conflict("Email already taken. Sign up with another email, or sign in.");
+        catch(Exception e){
+            if (e is ProfileAlreadyExistsException)
+            {
+                return Conflict("Email already taken. Sign up with another email, or sign in.");
+            }
+            throw;
         }
 
     }
@@ -64,12 +68,18 @@ public class AccountController : ControllerBase
             return BadRequest("Invalid email format.");
         }
         //not really needed since this won't be called unless a user is signed in and opened his account
-        try{
+        try
+        {
             var account = await accountInterface.GetAccount(email);
             return Ok(account);
         }
-        catch(ProfileNotFoundException e){
-            return NotFound($"Account with email {email} not found.");
+        catch (Exception e)
+        {
+            if (e is ProfileNotFoundException)
+            {
+                return NotFound($"Account with email {email} not found.");
+            }
+            throw;
         }
     }
 
@@ -80,14 +90,19 @@ public class AccountController : ControllerBase
         {
             return BadRequest("Invalid email format.");
         }
-        try{
+        try
+        {
             await accountInterface.DeleteAccount(email);
             return Ok("Account successfully deleted");
         }
-        //also not really needed since an account will only be deleted when the user presses on delete account in his own profile
-        catch(ProfileNotFoundException e){
+        catch (Exception e)
+        {
+            if (e is ProfileNotFoundException)
+            {
 
-            return NotFound($"Account with email {email} not found.");
+                return NotFound($"Account with email {email} not found.");
+            }
+            throw;
         }
 
     }
@@ -106,9 +121,13 @@ public class AccountController : ControllerBase
             await accountInterface.ReplaceAccount(new_acc);
             return CreatedAtAction(nameof(Edit), new { email = new_acc.email }, new_acc);
         }
-        catch (ProfileNotFoundException e)
-        {
-            return NotFound($"Account with email {email} not found.");
+        catch (Exception e)
+        { 
+            if (e is ProfileNotFoundException)
+            {
+                return NotFound($"Account with email {email} not found.");
+            }
+            throw;
         }
     }
     [HttpGet("sign_in")]
@@ -129,9 +148,13 @@ public class AccountController : ControllerBase
             }
             return Unauthorized("Incorrect password.");
         }
-        catch(ProfileNotFoundException e)
+        catch (Exception e)
         {
-            return NotFound($"Account with email {email} not found.");
+            if (e is ProfileNotFoundException)
+            {
+                return NotFound($"Account with email {email} not found.");
+            }
+            throw;
         }
     }
 }
