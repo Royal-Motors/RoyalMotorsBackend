@@ -35,7 +35,7 @@ namespace CarWebsiteBackend.Storage
             var sql = "DELETE FROM Accounts WHERE email = @Email";
             var parameters = new[] { new SqlParameter("@Email", email) };
             var rowsAffected = await _context.Database.ExecuteSqlRawAsync(sql, parameters);
-            if (rowsAffected <= 0) 
+            if (rowsAffected <= 0)
             {
                 throw new ProfileNotFoundException();
             }
