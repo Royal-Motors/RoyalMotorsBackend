@@ -2,7 +2,6 @@
 using CarWebsiteBackend.DTOs;
 using CarWebsiteBackend.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using CarWebsiteBackend.Exceptions.ProfileExceptions;
 using CarWebsiteBackend.Exceptions.CarExceptions;
 using Microsoft.Data.SqlClient;
 using Microsoft.AspNetCore.Mvc;
