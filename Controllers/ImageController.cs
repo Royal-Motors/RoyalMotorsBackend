@@ -40,6 +40,24 @@ namespace CarWebsiteBackend.Controllers
             }
         }
 
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> DeleteImage(string? id)
+        {
+            try
+            {
+                await imageInterface.DeleteImage(id);
+                return Ok($"Image with id {id} deleted");
+            }
+            catch (Exception e)
+            {
+                if (e is ImageNotFoundException)
+                {
+                    return NotFound($"Image with id {id} not found");
+                }
+                throw;
+            }
+        }
+
 
         [HttpPost("upload")]
         public async Task<IActionResult> PostImage(IFormFile File)
