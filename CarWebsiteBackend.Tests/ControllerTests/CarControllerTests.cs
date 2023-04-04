@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using CarWebsiteBackend.DTOs;
-using CarWebsiteBackend.Exceptions.ProfileExceptions;
+using CarWebsiteBackend.Exceptions.CarExceptions;
 using CarWebsiteBackend.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Mvc.Testing;
