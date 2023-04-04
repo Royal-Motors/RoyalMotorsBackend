@@ -35,7 +35,7 @@ public class CarController : ControllerBase
         }
     }
 
-    [HttpGet]
+    [HttpGet("{name}")]
     public async Task<ActionResult<Car>> GetCar(string name)
     {
       
@@ -51,7 +51,7 @@ public class CarController : ControllerBase
         }
     }
 
-    [HttpDelete]
+    [HttpDelete("{name}")]
     public async Task<IActionResult> DeleteCar(string name)
     {
    
