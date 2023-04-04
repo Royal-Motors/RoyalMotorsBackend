@@ -2,10 +2,11 @@
 using Azure.Storage.Blobs.Models;
 using CarWebsiteBackend.DTOs;
 using CarWebsiteBackend.Exceptions;
+using CarWebsiteBackend.Interfaces;
 
 namespace CarWebsiteBackend.Storage;
 
-public class ImageBlobStorage
+public class ImageBlobStorage : IImageInterface
 {
     private readonly BlobServiceClient blobServiceClient;
 
@@ -51,7 +52,7 @@ public class ImageBlobStorage
 
     public async Task UploadImage(string name, IFormFile file)
     {
-        string type = Path.GetExtension(file.FileName);
+        string type = Path.GetExtension(file.FileName).ToLower();
         if (type == ".jpg")
         {
             type = ".jpeg";

@@ -1,8 +1,11 @@
+using Azure.Storage.Blobs;
+using CarWebsiteBackend.Configuration;
 using CarWebsiteBackend.Controllers;
 using CarWebsiteBackend.Data;
 using CarWebsiteBackend.Interfaces;
 using CarWebsiteBackend.Storage;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +18,14 @@ builder.Services.AddScoped<IAccountInterface, AccountStorage>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 //builder.Services.AddSingleton<IAccountInterface, InMemoryStore>();
+builder.Services.AddSingleton<IImageInterface, ImageBlobStorage>();
+builder.Services.AddSingleton(sp =>
+{
+    return new BlobServiceClient("DefaultEndpointsProtocol=https;AccountName=blobstorage98754;AccountKey=IMl/5Xr9F4+WSlaf3ajHLd6k34eIf9Owson7ds3FEJd1yL+VTiAP7Rka8VXHBTwGEXfdpXDnDhJT+AStwwzmPw==;EndpointSuffix=core.windows.net");
+});
+
+
+
 
 
 var app = builder.Build();
