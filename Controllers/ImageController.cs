@@ -9,7 +9,7 @@ namespace CarWebsiteBackend.Controllers
 {
 
     [ApiController]
-    [Route("Image")]
+    [Route("image")]
     public class ImageController : ControllerBase
 
     {
