@@ -31,7 +31,7 @@ namespace CarWebsiteBackend.Storage
 
         public async Task DeleteCar(string name)
         {
-            var sql = "DELETE FROM Cars WHERE model = @Name";
+            var sql = "DELETE FROM Cars WHERE name = @Name";
             var parameters = new[] { new SqlParameter("@Name", name) };
             var rowsAffected = await _context.Database.ExecuteSqlRawAsync(sql, parameters);
             if (rowsAffected <= 0)
@@ -48,6 +48,16 @@ namespace CarWebsiteBackend.Storage
                 throw new CarNotFoundException();
             }
             return Car;
+        }
+
+        public async Task<List<Car>> GetAllCars()
+        {
+            var cars = await _context.Cars.ToListAsync();
+            if (cars == null || cars.Count == 0)
+            {
+                throw new CarNotFoundException();
+            }
+            return cars;
         }
 
         public async Task EditCar(Car car)

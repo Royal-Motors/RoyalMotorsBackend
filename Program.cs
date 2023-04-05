@@ -25,10 +25,6 @@ builder.Services.AddSingleton(sp =>
     return new BlobServiceClient("DefaultEndpointsProtocol=https;AccountName=blobstorage98754;AccountKey=IMl/5Xr9F4+WSlaf3ajHLd6k34eIf9Owson7ds3FEJd1yL+VTiAP7Rka8VXHBTwGEXfdpXDnDhJT+AStwwzmPw==;EndpointSuffix=core.windows.net");
 });
 
-
-
-
-
 var app = builder.Build();
 
 // Configure the HTTP request pipeline. 

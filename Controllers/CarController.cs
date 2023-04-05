@@ -29,9 +29,13 @@ public class CarController : ControllerBase
             await carInterface.AddCar(car);
             return CreatedAtAction(nameof(AddCar), new { name = car.name }, car);
         }
-        catch (DuplicateCarException e)
+        catch (Exception e)
         {
-            return Conflict("Car already added. Try to add another car.");
+            if(e is DuplicateCarException)
+            {
+                return Conflict("Car already added. Try to add another car.");
+            }
+            throw;
         }
     }
 
@@ -45,10 +49,33 @@ public class CarController : ControllerBase
             var car = await carInterface.GetCar(name);
             return Ok(car);
         }
-        catch (CarNotFoundException e)
+        catch (Exception e)
         {
-            return NotFound($"Car with name {name} not found.");
+            if(e is CarNotFoundException)
+            {
+                return NotFound($"Car with name {name} not found.");
+            }
+            throw;
         }
+    }
+
+    [HttpGet]
+    public async Task<ActionResult<List<Car>>> GetAllCars()
+    {
+        try
+        {
+            var cars = await carInterface.GetAllCars();
+            return Ok(cars);
+        }
+        catch (Exception e)
+        {
+            if(e is CarNotFoundException)
+            {
+                return NotFound($"No cars found.");
+            }
+            throw;
+        }
+
     }
 
     [HttpDelete("{name}")]
@@ -61,10 +88,13 @@ public class CarController : ControllerBase
             return Ok("Car successfully deleted");
         }
         
-        catch (CarNotFoundException e)
+        catch (Exception e)
         {
-
-            return NotFound($"Car with name {name} not found.");
+            if(e is CarNotFoundException)
+            {
+                return NotFound($"Car with name {name} not found.");
+            }
+            throw;
         }
 
     }
@@ -81,9 +111,13 @@ public class CarController : ControllerBase
             await carInterface.EditCar(new_car);
             return CreatedAtAction(nameof(Edit), new { name = new_car.name }, new_car);
         }
-        catch (CarNotFoundException e)
+        catch (Exception e)
         {
-            return NotFound($"Car with name {car.name} not found.");
+            if(e is CarNotFoundException)
+            {
+                return NotFound($"Car with name {car.name} not found.");
+            }
+            throw;
         }
     }
 }
