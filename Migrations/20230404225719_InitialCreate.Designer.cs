@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CarWebsiteBackend.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20230323221046_InitialCreate")]
+    [Migration("20230404225719_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -110,6 +110,61 @@ namespace CarWebsiteBackend.Migrations
                         .IsUnique();
 
                     b.ToTable("Cars");
+                });
+
+            modelBuilder.Entity("CarWebsiteBackend.DTOs.TestDrive", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AccountId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CarId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Time")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AccountId");
+
+                    b.HasIndex("CarId");
+
+                    b.ToTable("TestDrives");
+                });
+
+            modelBuilder.Entity("CarWebsiteBackend.DTOs.TestDrive", b =>
+                {
+                    b.HasOne("CarWebsiteBackend.DTOs.Account", "Account")
+                        .WithMany("TestDrives")
+                        .HasForeignKey("AccountId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("CarWebsiteBackend.DTOs.Car", "Car")
+                        .WithMany("TestDrives")
+                        .HasForeignKey("CarId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Account");
+
+                    b.Navigation("Car");
+                });
+
+            modelBuilder.Entity("CarWebsiteBackend.DTOs.Account", b =>
+                {
+                    b.Navigation("TestDrives");
+                });
+
+            modelBuilder.Entity("CarWebsiteBackend.DTOs.Car", b =>
+                {
+                    b.Navigation("TestDrives");
                 });
 #pragma warning restore 612, 618
         }

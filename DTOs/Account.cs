@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CarWebsiteBackend.DTOs
 {
@@ -17,5 +18,7 @@ namespace CarWebsiteBackend.DTOs
         public string password { get; set; }
         public string firstname { get; set; }
         public string lastname { get; set; }
+
+        public ICollection<TestDrive> ?TestDrives { get; set; }
     }
 }

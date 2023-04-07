@@ -37,7 +37,7 @@ public class AccountController : ControllerBase
     }
 
 
-    [HttpPost("sign_up")]
+    [HttpPost]
     public async Task<ActionResult<Account>> SignUp(Account account)
     {
         if(!IsValidEmail(account.email))
@@ -84,7 +84,7 @@ public class AccountController : ControllerBase
         }
     }
 
-    [HttpDelete("delete/{email}")]
+    [HttpDelete("{email}")]
     public async Task<IActionResult> DeleteAccount(string email)
     {
         if(!IsValidEmail(email))
@@ -108,7 +108,7 @@ public class AccountController : ControllerBase
 
     }
 
-    [HttpPut("edit/{email}")]
+    [HttpPut("{email}")]
     public async Task<ActionResult<Account>> Edit(EditedAcc editedAcc, string email)
     {
         if (!IsValidEmail(email))

@@ -59,7 +59,7 @@ namespace CarWebsiteBackend.Controllers
         }
 
 
-        [HttpPost("upload")]
+        [HttpPost]
         public async Task<IActionResult> PostImage(IFormFile File)
         {
             var type = File.ContentType;

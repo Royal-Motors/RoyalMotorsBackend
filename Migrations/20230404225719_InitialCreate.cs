@@ -49,6 +49,33 @@ namespace CarWebsiteBackend.Migrations
                     table.PrimaryKey("PK_Cars", x => x.Id);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "TestDrives",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Time = table.Column<int>(type: "int", nullable: false),
+                    CarId = table.Column<int>(type: "int", nullable: false),
+                    AccountId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TestDrives", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_TestDrives_Accounts_AccountId",
+                        column: x => x.AccountId,
+                        principalTable: "Accounts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_TestDrives_Cars_CarId",
+                        column: x => x.CarId,
+                        principalTable: "Cars",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_Accounts_email",
                 table: "Accounts",
@@ -60,11 +87,24 @@ namespace CarWebsiteBackend.Migrations
                 table: "Cars",
                 column: "name",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TestDrives_AccountId",
+                table: "TestDrives",
+                column: "AccountId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TestDrives_CarId",
+                table: "TestDrives",
+                column: "CarId");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "TestDrives");
+
             migrationBuilder.DropTable(
                 name: "Accounts");
 
