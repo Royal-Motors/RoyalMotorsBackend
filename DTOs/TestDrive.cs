@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CarWebsiteBackend.DTOs
@@ -27,4 +27,3 @@ namespace CarWebsiteBackend.DTOs
         public Account Account { get; set; }
     }
 }
-

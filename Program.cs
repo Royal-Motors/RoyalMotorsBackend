@@ -24,10 +24,6 @@ builder.Services.AddSingleton(sp =>
     return new BlobServiceClient(builder.Configuration.GetConnectionString("AzureBlobConnection"));
 });
 
-
-
-
-
 var app = builder.Build();
 
 // Configure the HTTP request pipeline. 
