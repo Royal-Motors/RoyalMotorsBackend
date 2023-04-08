@@ -42,5 +42,7 @@ namespace CarWebsiteBackend.DTOs
         public string image_id_list { get; set; }
         public string video_id { get; set; }
 
+        public ICollection<TestDrive> ?TestDrives { get; set; }
+
     }
 }
