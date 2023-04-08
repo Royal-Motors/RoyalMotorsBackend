@@ -38,14 +38,15 @@ public class AccountController : ControllerBase
 
 
     [HttpPost("sign_up")]
-    public async Task<ActionResult<Account>> SignUp(Account account)
+    public async Task<ActionResult<Account>> SignUp(CreateAccount create_account)
     {
-        if(!IsValidEmail(account.email))
+        if(!IsValidEmail(create_account.email))
         {
             return BadRequest("Invalid email format.");
         }
         try
         {
+            var account = new Account(create_account.email, create_account.password, create_account.firstname, create_account.lastname);
             await accountInterface.AddAccount(account);
             return CreatedAtAction(nameof(SignUp), new { email = account.email }, account);
         }
