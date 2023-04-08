@@ -22,10 +22,11 @@ public class CarController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<Car>> AddCar(Car car)
+    public async Task<ActionResult<Car>> AddCar(CreateCar create_car)
     {
         try
         {
+            var car = new Car(create_car.name, create_car.make, create_car.model, create_car.year, create_car.color, create_car.used, create_car.price, create_car.description, create_car.mileage, create_car.image_id_list, create_car.video_id);
             await carInterface.AddCar(car);
             return CreatedAtAction(nameof(AddCar), new { name = car.name }, car);
         }
