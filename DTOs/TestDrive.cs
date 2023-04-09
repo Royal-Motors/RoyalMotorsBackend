@@ -8,11 +8,11 @@ namespace CarWebsiteBackend.DTOs
     {
         public TestDrive() { } // Add a default constructor for Entity Framework
 
-        public TestDrive([Required] int Time, [Required] Car Car, [Required] Account Account)
+        public TestDrive([Required] int Time, [Required] int CarId, [Required] int AccountId)
         {
             this.Time = Time;
-            this.Account = Account;
-            this.Car = Car;
+            this.AccountId = AccountId;
+            this.CarId = CarId;
         }
 
         [Key]

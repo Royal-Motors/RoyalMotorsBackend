@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CarWebsiteBackend.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20230408035236_InitialCreate")]
+    [Migration("20230408180801_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -47,6 +47,13 @@ namespace CarWebsiteBackend.Migrations
                     b.Property<string>("password")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("verificationCode")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("verified")
+                        .HasColumnType("bit");
 
                     b.HasKey("Id");
 

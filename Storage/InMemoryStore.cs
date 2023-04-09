@@ -6,7 +6,7 @@ using CarWebsiteBackend.Exceptions.ProfileExceptions;
 using Microsoft.AspNetCore.Mvc;
 namespace CarWebsiteBackend.Storage;
 
-public class InMemoryStore : IAccountInterface
+public class InMemoryStore
 {
     private readonly Dictionary<string, Account> accountDict = new();
 
