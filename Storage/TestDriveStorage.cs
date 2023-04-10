@@ -1,4 +1,4 @@
-﻿using CarWebsiteBackend.Data;
+using CarWebsiteBackend.Data;
 using CarWebsiteBackend.DTOs;
 using CarWebsiteBackend.Interfaces;
 using Microsoft.EntityFrameworkCore;
