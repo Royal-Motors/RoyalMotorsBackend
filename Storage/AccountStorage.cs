@@ -70,10 +70,11 @@ namespace CarWebsiteBackend.Storage
 
         public async Task VerifyAccount(string email)
         {
-            var sql = "UPDATE Accounts SET verified = @NewVerified WHERE email = @Email";
+            var sql = "UPDATE Accounts SET verificationCode = @NewVerificationCode, verified = @NewVerified WHERE email = @Email";
             var parameters = new[]
             {
             new SqlParameter("@NewVerified", true),
+            new SqlParameter("@NewVerificationCode", ""),
             new SqlParameter("@Email", email)
             };
             var rowsAffected = await _context.Database.ExecuteSqlRawAsync(sql, parameters);

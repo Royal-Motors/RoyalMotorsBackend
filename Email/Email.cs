@@ -21,7 +21,7 @@ namespace CarWebsiteBackend.Email
             // configure the SMTP client
             var smtpClient = new SmtpClient("smtp.gmail.com", 587)
             {
-                Credentials = new NetworkCredential("royal.motors.send@gmail.com", "pass"),
+                Credentials = new NetworkCredential("royal.motors.send@gmail.com", "pclaknmhhmvarvrm"),
                 EnableSsl = true
             };
 
