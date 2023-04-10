@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CarWebsiteBackend.Storage
 {
-    public class TestDriveStorage : ITestDrive
+    public class TestDriveStorage : ITestDriveInterface
     {
         private readonly DataContext _context;
         public TestDriveStorage(DataContext context)
