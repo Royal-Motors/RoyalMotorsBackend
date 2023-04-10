@@ -21,8 +21,8 @@ public class AccountController : ControllerBase
         this.accountInterface = accountInterface;
     }
 
-        private bool IsValidEmail(string email)
-    {
+     private bool IsValidEmail(string email)
+     {
         if (string.IsNullOrWhiteSpace(email))
         {
             return false;
@@ -38,8 +38,22 @@ public class AccountController : ControllerBase
         {
             return false;
         }
+     }
+
+    private ContentResult verifySuccess()
+    {
+        return new ContentResult { Content = HTMLContent.HTMLContent.verifySuccessWebsite(), ContentType = "text/html" };
     }
 
+    private ContentResult verifyFail()
+    {
+        return new ContentResult { Content = HTMLContent.HTMLContent.verifyFailWebsite(), ContentType = "text/html" };
+    }
+
+    private ContentResult alreadyVerified()
+    {
+        return new ContentResult { Content = HTMLContent.HTMLContent.alreadyVerifiedWebsite(), ContentType = "text/html" };
+    }
 
     [HttpPost("sign_up")]
     public async Task<ActionResult<Account>> SignUp(CreateAccount create_account)
@@ -72,38 +86,20 @@ public class AccountController : ControllerBase
         try
         {
             var account = await accountInterface.GetAccount(email);
-            if (account.verified) return RedirectToAction("alreadyVerified");
+            if (account.verified) return alreadyVerified();
             if (account.verificationCode != null && account.verificationCode == code)
             {
                 await accountInterface.VerifyAccount(email);
-                return RedirectToAction("verifySuccess");
+                return verifySuccess();
             }
-            else return RedirectToAction("verifyFail");
+            else return verifyFail();
         }
         catch (Exception e)
         {
-            return RedirectToAction("verifyFail");
+            return verifyFail();
         }
 
     }
-
-    [HttpGet("verifySuccess")]
-    public ActionResult verifySuccess()
-    {
-        return new ContentResult { Content = HTMLContent.HTMLContent.verifySuccessWebsite(), ContentType = "text/html" };
-    }
-
-    [HttpGet("verifyFail")]
-    public ActionResult verifyFail() {
-        return new ContentResult { Content = HTMLContent.HTMLContent.verifyFailWebsite(), ContentType = "text/html" };
-    }
-
-    [HttpGet("alreadyVerified")]
-    public ActionResult alreadyVerified()
-    {
-        return new ContentResult { Content = HTMLContent.HTMLContent.alreadyVerifiedWebsite(), ContentType = "text/html" };
-    }
-
 
     // needs cleaning up and add login API
 
