@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CarWebsiteBackend.Storage
 {
+/*
     public class TestDriveStorage : ITestDriveInterface
     {
         private readonly DataContext _context;
@@ -59,4 +60,5 @@ namespace CarWebsiteBackend.Storage
             throw new NotImplementedException();
         }
     }
+    */
 }
