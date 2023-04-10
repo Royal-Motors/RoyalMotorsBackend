@@ -2,7 +2,11 @@
 using CarWebsiteBackend.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.RegularExpressions;
+using CarWebsiteBackend.Email;
 using CarWebsiteBackend.Exceptions.ProfileExceptions;
+using Microsoft.AspNetCore.Rewrite;
+using System;
+using CarWebsiteBackend.HTMLContent;
 
 namespace CarWebsiteBackend.Controllers;
 
@@ -46,8 +50,11 @@ public class AccountController : ControllerBase
         }
         try
         {
-            var account = new Account(create_account.email, create_account.password, create_account.firstname, create_account.lastname);
+            string code = Guid.NewGuid().ToString("N");
+            var account = new Account(create_account.email, create_account.password, create_account.firstname, create_account.lastname, false, code);
             await accountInterface.AddAccount(account);
+            string link = $"https://localhost:7284/account/verify/{create_account.email}/{code}";
+            Email.Email.sendEmail(account.email, "Verification Code", HTMLContent.HTMLContent.emailBody(link));
             return CreatedAtAction(nameof(SignUp), new { email = account.email }, account);
         }
         catch(Exception e){
@@ -57,10 +64,48 @@ public class AccountController : ControllerBase
             }
             throw;
         }
+    }
+
+    [HttpPost("verify/{email}/{code}")]
+    public async Task<ActionResult<Account>> verify(string email, string code)
+    {
+        try
+        {
+            var account = await accountInterface.GetAccount(email);
+            if (account.verified) return RedirectToAction("alreadyVerified");
+            if (account.verificationCode != null && account.verificationCode == code)
+            {
+                await accountInterface.VerifyAccount(email);
+                return RedirectToAction("verifySuccess");
+            }
+            else return RedirectToAction("verifyFail");
+        }
+        catch (Exception e)
+        {
+            return RedirectToAction("verifyFail");
+        }
 
     }
 
-// needs cleaning up and add login API
+    [HttpGet("verifySuccess")]
+    public ActionResult verifySuccess()
+    {
+        return new ContentResult { Content = HTMLContent.HTMLContent.verifySuccessWebsite(), ContentType = "text/html" };
+    }
+
+    [HttpGet("verifyFail")]
+    public ActionResult verifyFail() {
+        return new ContentResult { Content = HTMLContent.HTMLContent.verifyFailWebsite(), ContentType = "text/html" };
+    }
+
+    [HttpGet("alreadyVerified")]
+    public ActionResult alreadyVerified()
+    {
+        return new ContentResult { Content = HTMLContent.HTMLContent.alreadyVerifiedWebsite(), ContentType = "text/html" };
+    }
+
+
+    // needs cleaning up and add login API
 
     [HttpGet("{email}")]
     public async Task<ActionResult<Account>> GetAccount(string email)
@@ -145,6 +190,10 @@ public class AccountController : ControllerBase
         }
         try{
             var account = await accountInterface.GetAccount(email);
+            if (!account.verified)
+            {
+                return Unauthorized("Unverified email address");
+            }
             if (account.password == password){
                 return Ok(account);
             }

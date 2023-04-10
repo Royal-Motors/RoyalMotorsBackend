@@ -19,7 +19,9 @@ namespace CarWebsiteBackend.Migrations
                     email = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     password = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     firstname = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    lastname = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    lastname = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    verified = table.Column<bool>(type: "bit", nullable: false),
+                    verificationCode = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
