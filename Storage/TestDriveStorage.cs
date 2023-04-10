@@ -5,7 +5,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CarWebsiteBackend.Storage
 {
-/*
     public class TestDriveStorage : ITestDriveInterface
     {
         private readonly DataContext _context;
@@ -45,7 +44,17 @@ namespace CarWebsiteBackend.Storage
             throw new NotImplementedException();
         }
 
+        public Task DeleteTestDrive(int Id)
+        {
+            throw new NotImplementedException();
+        }
+
         public Task EditTestDrive(TestDrive test_drive)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<List<TestDrive>> GetTestDriveByAccount(int AccountId)
         {
             throw new NotImplementedException();
         }
@@ -55,10 +64,20 @@ namespace CarWebsiteBackend.Storage
             throw new NotImplementedException();
         }
 
+        public Task<List<TestDrive>> GetTestDriveByCarId(int Car_Id)
+        {
+            throw new NotImplementedException();
+        }
+
         public Task<TestDrive> GetTestDriveByTestDriveId(string test_drive_id)
         {
             throw new NotImplementedException();
         }
+
+        public Task<TestDrive> GetTestDriveByTestDriveId(int Id)
+        {
+            throw new NotImplementedException();
+        }
     }
-    */
+    
 }
