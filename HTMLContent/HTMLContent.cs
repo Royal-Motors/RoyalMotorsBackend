@@ -52,7 +52,7 @@
                     <div class='content'>
                         <h2 style='background-color: #0d47a1; color: #ffffff; padding: 10px;'>Verify your email address</h2>
                         <p>Please click the button below to verify your email address:</p>
-                        <form method='post' action='" + link + @"'>
+                        <form method='get' action='" + link + @"'>
                             <button type='submit' class='button'>Verify Email</button>
                         </form>
                     </div>
