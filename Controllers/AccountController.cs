@@ -7,7 +7,7 @@ using CarWebsiteBackend.Exceptions.ProfileExceptions;
 using Microsoft.AspNetCore.Rewrite;
 using System;
 using CarWebsiteBackend.HTMLContent;
-
+using BCrypt.Net;
 namespace CarWebsiteBackend.Controllers;
 
 [ApiController]
@@ -65,7 +65,7 @@ public class AccountController : ControllerBase
         try
         {
             string code = Guid.NewGuid().ToString("N");
-            var account = new Account(create_account.email, create_account.password, create_account.firstname, create_account.lastname, false, code);
+            var account = new Account(create_account.email, BCrypt.Net.BCrypt.HashPassword(create_account.password), create_account.firstname, create_account.lastname, false, code);
             await accountInterface.AddAccount(account);
             string link = $"https://royalmotors.azurewebsites.net/account/verify/{create_account.email}/{code}";
             Email.Email.sendEmail(account.email, "Verification Code", HTMLContent.HTMLContent.emailBody(link));
@@ -190,7 +190,8 @@ public class AccountController : ControllerBase
             {
                 return Unauthorized("Unverified email address");
             }
-            if (account.password == password){
+            var result = BCrypt.Net.BCrypt.Verify(password, account.password);
+            if (result){
                 return Ok(account);
             }
             return Unauthorized("Incorrect password.");
