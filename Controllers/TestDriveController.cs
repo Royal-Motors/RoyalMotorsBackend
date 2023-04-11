@@ -5,7 +5,6 @@ using System.Text.RegularExpressions;
 using CarWebsiteBackend.Exceptions.ProfileExceptions;
 using CarWebsiteBackend.Exceptions.CarExceptions;
 using CarWebsiteBackend.Exceptions.TestDriveExceptions;
-using CarWebsiteBackend.Exceptions;
 using Microsoft.Extensions.Options;
 using System.Drawing;
 
@@ -37,6 +36,10 @@ public class TestDriveController : ControllerBase
             {
                 return Conflict("TestDrive for this car already added. Try to add another TestDrive for another car.");
             }
+            else if (e is InvalidTestDriveRequestException)
+            {
+                return BadRequest("Invalid test drive request.");
+            }
             throw;
         }
     }
@@ -60,6 +63,12 @@ public class TestDriveController : ControllerBase
             throw;
         }
 
+    }
+
+    [HttpGet]
+    public async Task<ActionResult<List<TestDrive>>> GetAllTestDrives()
+    {
+        return await testdriveInterface.GetAllTestDrives();
     }
 
     [HttpGet("{Id}")]

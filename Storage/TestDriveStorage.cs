@@ -21,24 +21,31 @@ namespace CarWebsiteBackend.Storage
                 {
                     // Check conditions and insert new TestDrive record within a transaction
                     var query = $@"BEGIN TRANSACTION;
-                           IF NOT EXISTS(SELECT 1 FROM TestDrives WHERE CarId = {test_drive.CarId} AND AccountId = {test_drive.AccountId} AND Time <> {test_drive.Time})
-                           AND NOT EXISTS(SELECT 1 FROM TestDrives WHERE AccountId = {test_drive.AccountId} AND Time = {test_drive.Time})
-                           AND (SELECT COUNT(*) FROM TestDrives WHERE Time = {test_drive.Time}) < 2
+                           IF NOT EXISTS(SELECT 1 FROM TestDrives WHERE AccountId = {test_drive.AccountId} AND Time = {test_drive.Time})
                            AND NOT EXISTS(SELECT 1 FROM TestDrives WHERE CarId = {test_drive.CarId} AND Time = {test_drive.Time})
                            AND NOT EXISTS(SELECT 1 FROM TestDrives WHERE Time = {test_drive.Time} AND CarId IN (SELECT CarId FROM TestDrives WHERE AccountId = {test_drive.AccountId}))
                            BEGIN
                                INSERT INTO TestDrives (Time, CarId, AccountId) VALUES ({test_drive.Time}, {test_drive.CarId}, {test_drive.AccountId});
                            END
                            COMMIT TRANSACTION;";
-                    await _context.Database.ExecuteSqlRawAsync(query);
+                    var rowsAffected = await _context.Database.ExecuteSqlRawAsync(query);
+                    if(rowsAffected < 1)
+                    {
+                        throw new TestDriveConflictException();
+                    }
                     await transaction.CommitAsync();
                 }
                 catch
                 {
                     await transaction.RollbackAsync();
-                    throw new TestDriveConflictException();
+                    throw new InvalidTestDriveRequestException();
                 }
             }
+        }
+
+        public async Task<List<TestDrive>> GetAllTestDrives()
+        {
+            return await _context.TestDrives.ToListAsync();
         }
 
 

@@ -9,4 +9,5 @@ public interface ITestDriveInterface
     Task<TestDrive> GetTestDriveByTestDriveId(int Id);
     Task<List<TestDrive>> GetAllTestDriveByCarId(int Car_Id);
     Task<List<TestDrive>> GetAllTestDriveByAccount(int AccountId);
+    Task<List<TestDrive>> GetAllTestDrives();
 }
