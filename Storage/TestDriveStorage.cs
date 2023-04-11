@@ -2,7 +2,7 @@ using CarWebsiteBackend.Data;
 using CarWebsiteBackend.DTOs;
 using CarWebsiteBackend.Interfaces;
 using Microsoft.EntityFrameworkCore;
-
+using CarWebsiteBackend.Exceptions.TestDriveExceptions;
 namespace CarWebsiteBackend.Storage
 {
     public class TestDriveStorage : ITestDriveInterface
@@ -12,6 +12,7 @@ namespace CarWebsiteBackend.Storage
         {
             _context = context;
         }
+
         public async Task AddTestDrive(TestDrive test_drive)
         {
             using (var transaction = await _context.Database.BeginTransactionAsync())
@@ -21,8 +22,10 @@ namespace CarWebsiteBackend.Storage
                     // Check conditions and insert new TestDrive record within a transaction
                     var query = $@"BEGIN TRANSACTION;
                            IF NOT EXISTS(SELECT 1 FROM TestDrives WHERE CarId = {test_drive.CarId} AND AccountId = {test_drive.AccountId} AND Time <> {test_drive.Time})
+                           AND NOT EXISTS(SELECT 1 FROM TestDrives WHERE AccountId = {test_drive.AccountId} AND Time = {test_drive.Time})
                            AND (SELECT COUNT(*) FROM TestDrives WHERE Time = {test_drive.Time}) < 2
                            AND NOT EXISTS(SELECT 1 FROM TestDrives WHERE CarId = {test_drive.CarId} AND Time = {test_drive.Time})
+                           AND NOT EXISTS(SELECT 1 FROM TestDrives WHERE Time = {test_drive.Time} AND CarId IN (SELECT CarId FROM TestDrives WHERE AccountId = {test_drive.AccountId}))
                            BEGIN
                                INSERT INTO TestDrives (Time, CarId, AccountId) VALUES ({test_drive.Time}, {test_drive.CarId}, {test_drive.AccountId});
                            END
@@ -30,10 +33,10 @@ namespace CarWebsiteBackend.Storage
                     await _context.Database.ExecuteSqlRawAsync(query);
                     await transaction.CommitAsync();
                 }
-                catch (Exception ex)
+                catch
                 {
                     await transaction.RollbackAsync();
-                    throw ex;
+                    throw new TestDriveConflictException();
                 }
             }
         }

@@ -23,10 +23,10 @@ namespace CarWebsiteBackend.DTOs
 
         [ForeignKey("CarId")]
         public int CarId { get; set; }
-        public Car Car { get; set; }
+        public Car Car;
 
         [ForeignKey("AccountId")]
         public int AccountId { get; set; }
-        public Account Account { get; set; }
+        public Account Account;
     }
 }
