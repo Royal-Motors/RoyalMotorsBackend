@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using CarWebsiteBackend.Exceptions.ProfileExceptions;
 using Microsoft.Data.SqlClient;
 using Microsoft.AspNetCore.Mvc;
+using CarWebsiteBackend.Email;
 
 namespace CarWebsiteBackend.Storage
 {

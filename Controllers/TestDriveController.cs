@@ -15,30 +15,47 @@ namespace CarWebsiteBackend.Controllers;
 public class TestDriveController : ControllerBase
 {
     private readonly ITestDriveInterface testdriveInterface;
+    private readonly IAccountInterface accountInterface;
+    private readonly CarInterface carInterface;
 
-    public TestDriveController(ITestDriveInterface testdriveInterface)
+    public TestDriveController(ITestDriveInterface testdriveInterface, IAccountInterface accountInterface, CarInterface carInterface)
     {
         this.testdriveInterface = testdriveInterface;
+        this.accountInterface = accountInterface;
+        this.carInterface = carInterface;
     }
 
     [HttpPost]
-    public async Task<ActionResult<TestDrive>> AddTestDrive(TestDrive create_test_drive)
+    public async Task<ActionResult<TestDrive>> AddTestDrive(CreateTestDrive create_test_drive)
     {
         try
         {
-            var test_drive = new TestDrive(create_test_drive.Time, create_test_drive.CarId, create_test_drive.AccountId);
+            var account = await accountInterface.GetAccount(create_test_drive.Email);
+            var car = await carInterface.GetCar(create_test_drive.CarName);
+
+            var test_drive = new TestDrive(create_test_drive.Time, car, account);
+
             await testdriveInterface.AddTestDrive(test_drive);
-            return CreatedAtAction(nameof(AddTestDrive), new { CarId = test_drive.CarId }, test_drive);
+            return CreatedAtAction(nameof(AddTestDrive), new { create_test_drive = create_test_drive }, create_test_drive);
         }
         catch (Exception e)
         {
             if (e is TestDriveConflictException)
             {
-                return Conflict("TestDrive for this car already added. Try to add another TestDrive for another car.");
+                return Conflict($"Cannot schedule a test drive for user {create_test_drive.Email}" +
+                    $" with car {create_test_drive.CarName} at time {create_test_drive.Time} due to conflict.");
             }
             else if (e is InvalidTestDriveRequestException)
             {
                 return BadRequest("Invalid test drive request.");
+            }
+            else if(e is ProfileNotFoundException)
+            {
+                return NotFound($"Cannot schedule a test drive for non-existing user: {create_test_drive.Email}");
+            }
+            else if(e is CarNotFoundException)
+            {
+                return NotFound($"Cannot schedule a test drive for a non-existing car {create_test_drive.CarName}");
             }
             throw;
         }
@@ -47,7 +64,6 @@ public class TestDriveController : ControllerBase
     [HttpDelete("{Id}")]
     public async Task<IActionResult> DeleteTestDrive(int Id)
     {
-
         try
         {
             await testdriveInterface.DeleteTestDrive(Id);
@@ -68,7 +84,26 @@ public class TestDriveController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<List<TestDrive>>> GetAllTestDrives()
     {
-        return await testdriveInterface.GetAllTestDrives();
+        try
+        {
+            var testDrives = await testdriveInterface.GetAllTestDrives();
+            return Ok(testDrives);
+        }
+        catch(Exception e)
+        {
+            if (e is TestDriveNotFoundException)
+            {
+                return NotFound($"No test drives found");
+            }
+            throw;
+        }
+    }
+
+    [HttpDelete]
+    public async Task<ActionResult> DeleteAllTestDrives()
+    {
+        await testdriveInterface.DeleteAllTestDrives();
+        return Ok();
     }
 
     [HttpGet("{Id}")]

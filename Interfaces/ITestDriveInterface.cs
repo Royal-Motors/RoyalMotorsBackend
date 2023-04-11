@@ -10,4 +10,5 @@ public interface ITestDriveInterface
     Task<List<TestDrive>> GetAllTestDriveByCarId(int Car_Id);
     Task<List<TestDrive>> GetAllTestDriveByAccount(int AccountId);
     Task<List<TestDrive>> GetAllTestDrives();
+    Task DeleteAllTestDrives();
 }

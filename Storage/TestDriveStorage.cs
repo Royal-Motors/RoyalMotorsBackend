@@ -3,6 +3,8 @@ using CarWebsiteBackend.DTOs;
 using CarWebsiteBackend.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using CarWebsiteBackend.Exceptions.TestDriveExceptions;
+using Microsoft.Data.SqlClient;
+
 namespace CarWebsiteBackend.Storage
 {
     public class TestDriveStorage : ITestDriveInterface
@@ -35,9 +37,13 @@ namespace CarWebsiteBackend.Storage
                     }
                     await transaction.CommitAsync();
                 }
-                catch
+                catch(Exception e)
                 {
                     await transaction.RollbackAsync();
+                    if(e is TestDriveConflictException)
+                    {
+                        throw;
+                    }
                     throw new InvalidTestDriveRequestException();
                 }
             }
@@ -45,7 +51,19 @@ namespace CarWebsiteBackend.Storage
 
         public async Task<List<TestDrive>> GetAllTestDrives()
         {
-            return await _context.TestDrives.ToListAsync();
+            var testDrives = await _context.TestDrives.ToListAsync();
+            if(testDrives.Count == 0)
+            {
+                throw new TestDriveNotFoundException();
+            }
+            return testDrives;
+        }
+
+        public async Task DeleteAllTestDrives()
+        {
+            var sql = "DELETE FROM Cars";
+            await _context.Database.ExecuteSqlRawAsync(sql);
+            return;
         }
 
 
