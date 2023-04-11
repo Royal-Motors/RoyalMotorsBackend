@@ -5,11 +5,11 @@ namespace CarWebsiteBackend.DTOs;
 
 public class CreateTestDrive
 {
-    public long Time { get; set; }
+    public int Time { get; set; }
     public string CarName { get; set; }
     public string Email { get; set; }
 
-    public CreateTestDrive([Required] long Time, [Required] string CarName, [Required] string Email)
+    public CreateTestDrive([Required] int Time, [Required] string CarName, [Required] string Email)
     {
         this.Time = Time;
         this.CarName = CarName;
