@@ -54,22 +54,22 @@ namespace CarWebsiteBackend.Storage
             throw new NotImplementedException();
         }
 
-        public Task<List<TestDrive>> GetTestDriveByAccount(int AccountId)
+        public Task<List<TestDrive>> GetAllTestDriveByAccount(int AccountId)
         {
             throw new NotImplementedException();
         }
 
-        public Task<List<TestDrive>> GetTestDriveByCarId(string car_id)
+        public Task<List<TestDrive>> GetAllTestDriveByCarId(string car_id)
         {
             throw new NotImplementedException();
         }
 
-        public Task<List<TestDrive>> GetTestDriveByCarId(int Car_Id)
+        public Task<List<TestDrive>> GetAllTestDriveByCarId(int Car_Id)
         {
             throw new NotImplementedException();
         }
 
-        public Task<TestDrive> GetTestDriveByTestDriveId(string test_drive_id)
+        public Task<TestDrive> GetAllTestDriveByTestDriveId(string test_drive_id)
         {
             throw new NotImplementedException();
         }
