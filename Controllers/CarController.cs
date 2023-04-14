@@ -7,7 +7,7 @@ using CarWebsiteBackend.Exceptions.CarExceptions;
 using CarWebsiteBackend.Exceptions;
 using Microsoft.Extensions.Options;
 using System.Drawing;
-
+using Microsoft.AspNetCore.Cors;
 namespace CarWebsiteBackend.Controllers;
 
 [ApiController]
@@ -22,6 +22,7 @@ public class CarController : ControllerBase
     }
 
     [HttpPost]
+    [EnableCors("AllowAnyOrigin")]
     public async Task<ActionResult<Car>> AddCar(CreateCar create_car)
     {
         try
@@ -41,6 +42,7 @@ public class CarController : ControllerBase
     }
 
     [HttpGet("{name}")]
+    [EnableCors("AllowAnyOrigin")]
     public async Task<ActionResult<Car>> GetCar(string name)
     {
       
@@ -61,6 +63,7 @@ public class CarController : ControllerBase
     }
 
     [HttpGet]
+    [EnableCors("AllowAnyOrigin")]
     public async Task<ActionResult<List<Car>>> GetAllCars()
     {
         try
@@ -80,6 +83,7 @@ public class CarController : ControllerBase
     }
 
     [HttpDelete("{name}")]
+    [EnableCors("AllowAnyOrigin")]
     public async Task<IActionResult> DeleteCar(string name)
     {
    
@@ -101,6 +105,7 @@ public class CarController : ControllerBase
     }
 
     [HttpPut]
+    [EnableCors("AllowAnyOrigin")]
     public async Task<ActionResult<Car>> Edit(Car car)
     {
         try
