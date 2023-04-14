@@ -101,8 +101,6 @@ public class AccountController : ControllerBase
 
     }
 
-    // needs cleaning up and add login API
-
     [HttpGet("{email}")]
     public async Task<ActionResult<Account>> GetAccount(string email)
     {
