@@ -7,12 +7,12 @@ using CarWebsiteBackend.Exceptions.CarExceptions;
 using CarWebsiteBackend.Exceptions;
 using Microsoft.Extensions.Options;
 using System.Drawing;
-using Microsoft.AspNetCore.Cors;
+//using Microsoft.AspNetCore.Cors;
 namespace CarWebsiteBackend.Controllers;
 
 [ApiController]
 [Route("car")]
-[EnableCors("AllowAnyOrigin")]
+//[EnableCors("AllowAnyOrigin")]
 public class CarController : ControllerBase
 {
     private readonly CarInterface carInterface;
