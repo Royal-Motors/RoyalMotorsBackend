@@ -33,11 +33,7 @@ public class TestDriveController : ControllerBase
         }
         catch (Exception e)
         {
-            if (e is TestDriveConflictException)
-            {
-                return Conflict("TestDrive for this car already added. Try to add another TestDrive for another car.");
-            }
-            throw;
+            return Conflict(e.Message);
         }
     }
 
@@ -82,7 +78,7 @@ public class TestDriveController : ControllerBase
         }
     }
 
-    [HttpGet("{Car_Id}")]
+    [HttpGet("c/{Car_Id}")]
     public async Task<ActionResult<List<TestDrive>>> GetAllTestDriveByCarId(int Car_Id)
     {
         try
@@ -101,7 +97,7 @@ public class TestDriveController : ControllerBase
 
     }
 
-    [HttpGet("{AccountId}")]
+    [HttpGet("a/{AccountId}")]
     public async Task<ActionResult<List<TestDrive>>> GetAllTestDriveByAccount(int AccountId)
     {
         try
