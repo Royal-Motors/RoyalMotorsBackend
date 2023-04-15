@@ -8,6 +8,11 @@ using Microsoft.AspNetCore.Rewrite;
 using System;
 using CarWebsiteBackend.HTMLContent;
 using BCrypt.Net;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
+using Microsoft.AspNetCore.Authorization;
 namespace CarWebsiteBackend.Controllers;
 
 [ApiController]
@@ -80,9 +85,14 @@ public class AccountController : ControllerBase
         }
     }
 
-    [HttpGet("verify/{email}/{code}")]
+    [HttpGet("verify/{email}/{code}"), Authorize]
     public async Task<ActionResult<Account>> verify(string email, string code)
     {
+        string emailClaim = HttpContext.User.FindFirst(ClaimTypes.Email)?.Value;
+        if(emailClaim != email)
+        {
+            return Unauthorized();
+        }
         try
         {
             var account = await accountInterface.GetAccount(email);
@@ -100,13 +110,17 @@ public class AccountController : ControllerBase
         }
 
     }
-
-    [HttpGet("{email}")]
+    [HttpGet("{email}"), Authorize]
     public async Task<ActionResult<Account>> GetAccount(string email)
     {
         if(!IsValidEmail(email))
         {
             return BadRequest("Invalid email format.");
+        }
+        string emailClaim = HttpContext.User.FindFirst(ClaimTypes.Email)?.Value;
+        if(emailClaim != email)
+        {
+            return Unauthorized();
         }
         //not really needed since this won't be called unless a user is signed in and opened his account
         try
@@ -124,12 +138,17 @@ public class AccountController : ControllerBase
         }
     }
 
-    [HttpDelete("delete/{email}")]
+    [HttpDelete("delete/{email}"), Authorize]
     public async Task<IActionResult> DeleteAccount(string email)
     {
         if(!IsValidEmail(email))
         {
             return BadRequest("Invalid email format.");
+        }
+        string emailClaim = HttpContext.User.FindFirst(ClaimTypes.Email)?.Value;
+        if(emailClaim != email)
+        {
+            return Unauthorized();
         }
         try
         {
@@ -148,16 +167,21 @@ public class AccountController : ControllerBase
 
     }
 
-    [HttpPut("edit/{email}")]
+    [HttpPut("edit/{email}"), Authorize]
     public async Task<ActionResult<Account>> Edit(EditedAcc editedAcc, string email)
     {
         if (!IsValidEmail(email))
         {
             return BadRequest("Invalid email format");
         }
+        string emailClaim = HttpContext.User.FindFirst(ClaimTypes.Email)?.Value;
+        if(emailClaim != email)
+        {
+            return Unauthorized();
+        }
         try
         {
-            Account new_acc = new Account(email, editedAcc.password, editedAcc.firstname, editedAcc.lastname);
+            Account new_acc = new Account(email, BCrypt.Net.BCrypt.HashPassword(editedAcc.password), editedAcc.firstname, editedAcc.lastname);
             //await is related to async, wait it to sync.  
             await accountInterface.ReplaceAccount(new_acc);
             return CreatedAtAction(nameof(Edit), new { email = new_acc.email }, new_acc);
@@ -190,7 +214,23 @@ public class AccountController : ControllerBase
             }
             var result = BCrypt.Net.BCrypt.Verify(password, account.password);
             if (result){
-                return Ok(account);
+                var claims = new[] {
+                        new Claim(ClaimTypes.Email, account.email)
+                };
+                var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("thisisasecretkey@123"));
+                var signinCredentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
+                var jwtSecurityToken = new JwtSecurityToken(
+                    issuer: "http://localhost:7284",
+                    audience: "http://localhost:7284",
+                    claims: claims,
+                    expires: DateTime.Now.AddMinutes(10),
+                    signingCredentials: signinCredentials
+                );
+                return Ok(new
+                {
+                    token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken),
+                    expiration = jwtSecurityToken.ValidTo
+                });
             }
             return Unauthorized("Incorrect password.");
         }
@@ -204,3 +244,4 @@ public class AccountController : ControllerBase
         }
     }
 }
+
