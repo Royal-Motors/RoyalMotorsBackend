@@ -12,8 +12,6 @@ namespace CarWebsiteBackend.DTOs
         public TestDrive(TestDriveRequest request, Car car, Account account)
         {
             Time = request.Time;
-            CarName = request.CarName;
-            AccountEmail = request.AccountEmail;
             Car = car;
             Account = account;
             CarId = car.Id;
@@ -27,17 +25,13 @@ namespace CarWebsiteBackend.DTOs
         public int Time { get; set; }
 
         [ForeignKey("CarId")]
-        public int CarId;
-        public string CarName { get; set; }
+        public int CarId { get; set; }
 
-        [JsonIgnore]
         public Car ?Car { get; set; }
 
         [ForeignKey("AccountId")]
         public int AccountId { get; set; }
-        public string AccountEmail { get; set; }
 
-        [JsonIgnore]
         public Account ?Account { get; set; }
     }
 }

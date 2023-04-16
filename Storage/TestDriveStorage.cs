@@ -77,7 +77,7 @@ namespace CarWebsiteBackend.Storage
         public async Task<List<TestDrive>> GetAllTestDriveByAccountEmail(string Email)
         {
             var testDrives = await _context.TestDrives
-                .Include(td => td.Account)
+                .Include(td => td.Car)
                 .Where(td => td.Account.email == Email)
                 .ToListAsync();
             if(testDrives.Count == 0)
@@ -90,7 +90,7 @@ namespace CarWebsiteBackend.Storage
         public async Task<List<TestDrive>> GetAllTestDriveByCarName(string CarName)
         {
             var testDrives = await _context.TestDrives
-                .Include(td => td.Car)
+                .Include(td => td.Account)
                 .Where(td => td.Car.name == CarName)
                 .ToListAsync();
             if (testDrives.Count == 0)
@@ -102,7 +102,10 @@ namespace CarWebsiteBackend.Storage
 
         public async Task<TestDrive> GetTestDriveByTestDriveId(int Id)
         {
-            var testDrive = await _context.TestDrives.Where(p => p.Id == Id).FirstOrDefaultAsync();
+            var testDrive = await _context.TestDrives.Where(p => p.Id == Id)
+                .Include(td => td.Car)
+                .Include(td => td.Account)
+                .FirstOrDefaultAsync();
             if (testDrive == null)
             {
                 throw new TestDriveNotFoundException();
