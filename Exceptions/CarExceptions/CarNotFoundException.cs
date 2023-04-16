@@ -1,15 +1,6 @@
-﻿namespace CarWebsiteBackend.Exceptions.CarExceptions
+﻿namespace CarWebsiteBackend.Exceptions.CarExceptions;
+public class CarNotFoundException : Exception
 {
-    //This exception could be thrown when the car object is not found in the car dealership's inventory.
-    public class CarNotFoundException: Exception
-    {
-        //Overriding the Message property
-        public override string Message
-        {
-            get
-            {
-                return "CarNotFoundException";
-            }
-        }
-    }
+    public CarNotFoundException(string message) : base(message) { }
+    public CarNotFoundException() : base() { }
 }

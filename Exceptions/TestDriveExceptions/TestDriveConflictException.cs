@@ -1,16 +1,7 @@
-﻿namespace CarWebsiteBackend.Exceptions.TestDriveExceptions
-{
-    // This exception can be thrown if there is a conflict with the requested test drive
-    public class TestDriveConflictException : Exception
-    {
-        //Overriding the Message property
-        public override string Message
-        {
-            get
-            {
-                return "Test Drive Conflict";
-            }
-        }
-    }
-}
+﻿namespace CarWebsiteBackend.Exceptions.TestDriveExceptions;
 
+public class TestDriveConflictException : Exception
+{
+    public TestDriveConflictException(string message) : base(message) {}
+    public TestDriveConflictException() : base() {}
+}

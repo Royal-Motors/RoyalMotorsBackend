@@ -2,12 +2,6 @@
 
 public class ImageNotFoundException : Exception
 {
-    public override string Message
-    {
-        get
-        {
-            return "Image Not Found";
-        }
-    }
+    public ImageNotFoundException(string message) : base(message) { }
+    public ImageNotFoundException() : base() { }
 }
-

@@ -1,15 +1,6 @@
-﻿namespace CarWebsiteBackend.Exceptions.ProfileExceptions
+﻿namespace CarWebsiteBackend.Exceptions.ProfileExceptions;
+public class ProfileAlreadyExistsException : Exception
 {
-    public class ProfileAlreadyExistsException : Exception
-    {
-        //Overriding the Message property
-        public override string Message
-        {
-            get
-            {
-                return "ProfileAlreadyExists";
-            }
-        }
-    }
+    public ProfileAlreadyExistsException(string message) : base(message) { }
+    public ProfileAlreadyExistsException() : base() { }
 }
-

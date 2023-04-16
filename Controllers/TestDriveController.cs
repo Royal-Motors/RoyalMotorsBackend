@@ -16,24 +16,44 @@ namespace CarWebsiteBackend.Controllers;
 public class TestDriveController : ControllerBase
 {
     private readonly ITestDriveInterface testdriveInterface;
+    private readonly IAccountInterface accountStore;
+    private readonly CarInterface carStore;
 
-    public TestDriveController(ITestDriveInterface testdriveInterface)
+    public TestDriveController(ITestDriveInterface testdriveInterface, IAccountInterface accountStore, CarInterface carStore)
     {
         this.testdriveInterface = testdriveInterface;
+        this.accountStore = accountStore;
+        this.carStore = carStore;
     }
 
     [HttpPost]
-    public async Task<ActionResult<TestDrive>> AddTestDrive(TestDrive create_test_drive)
+    public async Task<ActionResult<TestDrive>> AddTestDrive(TestDriveRequest request)
     {
         try
         {
-            var test_drive = new TestDrive(create_test_drive.Time, create_test_drive.CarId, create_test_drive.AccountId);
-            await testdriveInterface.AddTestDrive(test_drive);
-            return CreatedAtAction(nameof(AddTestDrive), new { CarId = test_drive.CarId }, test_drive);
+            var account = await accountStore.GetAccount(request.AccountEmail);
+            var car = await carStore.GetCar(request.CarName);
+
+            TestDrive testDrive = new(request, car, account);
+
+            await testdriveInterface.AddTestDrive(testDrive);
+            return CreatedAtAction(nameof(AddTestDrive), testDrive);
         }
         catch (Exception e)
         {
-            return Conflict(e.Message);
+            if(e is ProfileNotFoundException)
+            {
+                return NotFound($"User with email {request.AccountEmail} not found");
+            }
+            else if(e is CarNotFoundException)
+            {
+                return NotFound($"Car {request.CarName} not found");
+            }
+            else if(e is TestDriveConflictException)
+            {
+                return Conflict(e.Message);
+            }
+            throw;
         }
     }
 
@@ -61,8 +81,6 @@ public class TestDriveController : ControllerBase
     [HttpGet("{Id}")]
     public async Task<ActionResult<TestDrive>> GetTestDriveByTestDriveId(int Id)
     {
-
-        //not really needed since this won't be called unless a user is signed in and opened his account
         try
         {
             var test_drive = await testdriveInterface.GetTestDriveByTestDriveId(Id);
@@ -90,7 +108,7 @@ public class TestDriveController : ControllerBase
         {
             if (e is TestDriveNotFoundException)
             {
-                return NotFound($"No TestDrive found.");
+                return NotFound($"No test drives found for car {Car_Name}.");
             }
             throw;
         }
@@ -109,7 +127,7 @@ public class TestDriveController : ControllerBase
         {
             if (e is TestDriveNotFoundException)
             {
-                return NotFound($"No TestDrive found.");
+                return NotFound($"No test drives found for user {Account_Email}.");
             }
             throw;
         }

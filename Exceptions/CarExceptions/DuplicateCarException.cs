@@ -1,17 +1,6 @@
-﻿using System.Reflection;
-
-namespace CarWebsiteBackend.Exceptions.CarExceptions;
-
-//This exception could be thrown when the car object being added already exists in the car dealership's inventory.
+﻿namespace CarWebsiteBackend.Exceptions.CarExceptions;
 public class DuplicateCarException : Exception
 {
-    //Overriding the Message property
-    public override string Message
-    {
-        get
-        {
-            return "DuplicateCarException";
-        }
-    }
+    public DuplicateCarException(string message) : base(message) { }
+    public DuplicateCarException() : base() { }
 }
-
