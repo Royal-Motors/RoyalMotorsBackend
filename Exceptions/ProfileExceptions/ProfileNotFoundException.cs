@@ -1,14 +1,6 @@
-﻿namespace CarWebsiteBackend.Exceptions.ProfileExceptions
+﻿namespace CarWebsiteBackend.Exceptions.ProfileExceptions;
+public class ProfileNotFoundException : Exception
 {
-    public class ProfileNotFoundException : Exception
-    {
-        //Overriding the Message property
-        public override string Message
-        {
-            get
-            {
-                return "ProfileNotFound";
-            }
-        }
-    }
+    public ProfileNotFoundException(string message) : base(message) { }
+    public ProfileNotFoundException() : base() { }
 }

@@ -42,9 +42,5 @@ namespace CarWebsiteBackend.Data
                 .HasForeignKey(t => t.CarId)
                 .OnDelete(DeleteBehavior.Cascade);
         }
-
-
-
-
     }
 }

@@ -85,7 +85,7 @@ public class AccountController : ControllerBase
         }
     }
 
-    [HttpGet("verify/{email}/{code}"), Authorize]
+    [HttpGet("verify/{email}/{code}")]
     public async Task<ActionResult<Account>> verify(string email, string code)
     {
         string emailClaim = HttpContext.User.FindFirst(ClaimTypes.Email)?.Value;
@@ -182,7 +182,6 @@ public class AccountController : ControllerBase
         try
         {
             Account new_acc = new Account(email, BCrypt.Net.BCrypt.HashPassword(editedAcc.password), editedAcc.firstname, editedAcc.lastname);
-            //await is related to async, wait it to sync.  
             await accountInterface.ReplaceAccount(new_acc);
             return CreatedAtAction(nameof(Edit), new { email = new_acc.email }, new_acc);
         }
