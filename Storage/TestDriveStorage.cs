@@ -8,6 +8,7 @@ using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Identity.Client;
+using Azure.Storage.Blobs.Models;
 
 namespace CarWebsiteBackend.Storage
 {
@@ -30,22 +31,22 @@ namespace CarWebsiteBackend.Storage
 
                     if (existingTestDrives.Any(td=> td.AccountId == test_drive.AccountId && td.CarId == test_drive.CarId))
                     {
-                        throw new Exception("Test drive already exists for this car and account with at this time or different time.");
+                        throw new TestDriveConflictException();
                     }
 
                     if (existingTestDrives.Any(td => td.AccountId == test_drive.AccountId && td.Time == test_drive.Time))
                     {
-                        throw new Exception("User Cannot have two test drives at the same time.");
+                        throw new TestDriveConflictException();
                     }
 
                     if (existingTestDrives.Count(td => td.Time == test_drive.Time) >= 2)
                     {
-                        throw new Exception("Two test drives already exist for this time.");
+                        throw new TestDriveConflictException();
                     }
 
                     if (existingTestDrives.Any(td => td.Time == test_drive.Time && td.CarId == test_drive.CarId))
                     {
-                        throw new Exception("A test drive already exists for this car and time.");
+                        throw new TestDriveConflictException();
                     }
 
                     await _context.TestDrives.AddAsync(test_drive);
@@ -72,15 +73,21 @@ namespace CarWebsiteBackend.Storage
             }
         }
 
-        public async Task<List<TestDrive>> GetAllTestDriveByAccount(int AccountId)
+        public async Task<List<TestDrive>> GetAllTestDriveByAccountEmail(string Email)
         {
-            var testDrives = await _context.TestDrives.Where(p => p.AccountId == AccountId).ToListAsync();
+            var testDrives = await _context.TestDrives
+                .Include(td => td.Account)
+                .Where(td => td.Account.email == Email)
+                .ToListAsync();
             return testDrives;
         }
 
-        public async Task<List<TestDrive>> GetAllTestDriveByCarId(int Car_Id)
+        public async Task<List<TestDrive>> GetAllTestDriveByCarName(string CarName)
         {
-            var testDrives = await _context.TestDrives.Where(p => p.CarId == Car_Id).ToListAsync();
+            var testDrives = await _context.TestDrives
+                .Include(td => td.Car)
+                .Where(td => td.Car.name == CarName)
+                .ToListAsync();
             return testDrives;
         }
 
