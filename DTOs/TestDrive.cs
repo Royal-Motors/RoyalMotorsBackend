@@ -1,6 +1,7 @@
 ﻿
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace CarWebsiteBackend.DTOs
 {
@@ -23,10 +24,12 @@ namespace CarWebsiteBackend.DTOs
 
         [ForeignKey("CarId")]
         public int CarId { get; set; }
-        public Car Car { get; set; }
+        [JsonIgnore]
+        public Car ?Car { get; set; }
 
         [ForeignKey("AccountId")]
         public int AccountId { get; set; }
-        public Account Account { get; set; }
+        [JsonIgnore]
+        public Account ?Account { get; set; }
     }
 }

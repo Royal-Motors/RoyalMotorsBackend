@@ -7,6 +7,7 @@ using System.Drawing;
 using static System.Net.Mime.MediaTypeNames;
 using System.Reflection.Metadata;
 using System.Runtime.InteropServices;
+using System.Text.Json.Serialization;
 
 namespace CarWebsiteBackend.DTOs
 {
@@ -42,6 +43,7 @@ namespace CarWebsiteBackend.DTOs
         public string image_id_list { get; set; }
         public string video_id { get; set; }
 
+        [JsonIgnore]
         public ICollection<TestDrive> ?TestDrives { get; set; }
 
     }

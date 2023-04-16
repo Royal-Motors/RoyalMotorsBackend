@@ -33,11 +33,7 @@ public class TestDriveController : ControllerBase
         }
         catch (Exception e)
         {
-            if (e is TestDriveConflictException)
-            {
-                return Conflict("TestDrive for this car already added. Try to add another TestDrive for another car.");
-            }
-            throw;
+            return Conflict(e.Message);
         }
     }
 
@@ -82,12 +78,12 @@ public class TestDriveController : ControllerBase
         }
     }
 
-    [HttpGet("{Car_Id}")]
-    public async Task<ActionResult<List<TestDrive>>> GetAllTestDriveByCarId(int Car_Id)
+    [HttpGet("car/{Car_Name}")]
+    public async Task<ActionResult<List<TestDrive>>> GetAllTestDriveByCarName(string Car_Name)
     {
         try
         {
-            var test_drives = await testdriveInterface.GetAllTestDriveByCarId(Car_Id);
+            var test_drives = await testdriveInterface.GetAllTestDriveByCarName(Car_Name);
             return Ok(test_drives);
         }
         catch (Exception e)
@@ -101,12 +97,12 @@ public class TestDriveController : ControllerBase
 
     }
 
-    [HttpGet("{AccountId}")]
-    public async Task<ActionResult<List<TestDrive>>> GetAllTestDriveByAccount(int AccountId)
+    [HttpGet("account/{Account_Email}")]
+    public async Task<ActionResult<List<TestDrive>>> GetAllTestDriveByAccountEmail(string Account_Email)
     {
         try
         {
-            var test_drives = await testdriveInterface.GetAllTestDriveByAccount(AccountId);
+            var test_drives = await testdriveInterface.GetAllTestDriveByAccountEmail(Account_Email);
             return Ok(test_drives);
         }
         catch (Exception e)

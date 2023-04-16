@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace CarWebsiteBackend.DTOs
 {
@@ -32,6 +33,7 @@ namespace CarWebsiteBackend.DTOs
 
         public string verificationCode { get; set; }
 
+        [JsonIgnore]
         public ICollection<TestDrive>? TestDrives { get; set; }
     }
 }
