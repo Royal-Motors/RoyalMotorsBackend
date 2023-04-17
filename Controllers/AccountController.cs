@@ -34,7 +34,6 @@ public class AccountController : ControllerBase
         }
         try
         {
-            // use regex to validate email format
             return Regex.IsMatch(email,
                 @"^[^@\s]+@[^@\s]+\.[^@\s]+$",
                 RegexOptions.IgnoreCase, TimeSpan.FromMilliseconds(250));
@@ -88,11 +87,6 @@ public class AccountController : ControllerBase
     [HttpGet("verify/{email}/{code}")]
     public async Task<ActionResult<Account>> verify(string email, string code)
     {
-        string emailClaim = HttpContext.User.FindFirst(ClaimTypes.Email)?.Value;
-        if(emailClaim != email)
-        {
-            return Unauthorized();
-        }
         try
         {
             var account = await accountInterface.GetAccount(email);
@@ -104,7 +98,7 @@ public class AccountController : ControllerBase
             }
             else return verifyFail();
         }
-        catch (Exception e)
+        catch
         {
             return verifyFail();
         }
@@ -120,9 +114,8 @@ public class AccountController : ControllerBase
         string emailClaim = HttpContext.User.FindFirst(ClaimTypes.Email)?.Value;
         if(emailClaim != email)
         {
-            return Unauthorized();
+            return Unauthorized("You are not authorized to view this account.");
         }
-        //not really needed since this won't be called unless a user is signed in and opened his account
         try
         {
             var account = await accountInterface.GetAccount(email);
@@ -148,7 +141,7 @@ public class AccountController : ControllerBase
         string emailClaim = HttpContext.User.FindFirst(ClaimTypes.Email)?.Value;
         if(emailClaim != email)
         {
-            return Unauthorized();
+            return Unauthorized("You are not authorized to delete this account.");
         }
         try
         {
@@ -177,7 +170,7 @@ public class AccountController : ControllerBase
         string emailClaim = HttpContext.User.FindFirst(ClaimTypes.Email)?.Value;
         if(emailClaim != email)
         {
-            return Unauthorized();
+            return Unauthorized("You are not authorized to edit this account.");
         }
         try
         {
