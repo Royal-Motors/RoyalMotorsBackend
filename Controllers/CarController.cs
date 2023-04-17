@@ -12,6 +12,7 @@ namespace CarWebsiteBackend.Controllers;
 
 [ApiController]
 [Route("car")]
+//[EnableCors("AllowAnyOrigin")]
 public class CarController : ControllerBase
 {
     private readonly CarInterface carInterface;
@@ -99,7 +100,6 @@ public class CarController : ControllerBase
     }
 
     [HttpPut]
-    [EnableCors("AllowAnyOrigin")]
     public async Task<ActionResult<Car>> Edit(Car car)
     {
         try
