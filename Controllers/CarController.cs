@@ -99,6 +99,7 @@ public class CarController : ControllerBase
     }
 
     [HttpPut]
+    [EnableCors("AllowAnyOrigin")]
     public async Task<ActionResult<Car>> Edit(Car car)
     {
         try
