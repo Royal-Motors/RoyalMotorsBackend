@@ -62,10 +62,10 @@ namespace CarWebsiteBackend.Storage
 
         public async Task EditCar(Car car)
         {
-            var sql = "UPDATE Cars SET name = @NewName, make = @NewMake, model = @NewModel, year = @NewYear, color = @NewColor, price = @NewPrice, description = @NewDescription, mileage = @NewMileage, image_id_list = @NewImage, video_id = @NewVideo WHERE email = @Email";
+            var sql = "UPDATE Cars SET make = @NewMake, model = @NewModel, year = @NewYear, color = @NewColor, price = @NewPrice, description = @NewDescription, mileage = @NewMileage, image_id_list = @NewImage, video_id = @NewVideo WHERE name = @Name";
             var parameters = new[]
             {
-            new SqlParameter("@NewName", car.name),
+            new SqlParameter("@Name", car.name),
             new SqlParameter("@NewMake", car.make),
             new SqlParameter("@NewModel", car.model),
             new SqlParameter("@NewYear", car.year),
