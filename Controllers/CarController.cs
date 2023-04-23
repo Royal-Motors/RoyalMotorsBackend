@@ -12,7 +12,6 @@ namespace CarWebsiteBackend.Controllers;
 
 [ApiController]
 [Route("car")]
-//[EnableCors("AllowAnyOrigin")]
 public class CarController : ControllerBase
 {
     private readonly CarInterface carInterface;
