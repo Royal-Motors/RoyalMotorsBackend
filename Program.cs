@@ -71,14 +71,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
     };
 });
 
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowAnyOrigin",
-        builder => builder.AllowAnyOrigin()
-                            .AllowAnyHeader()
-                            .AllowAnyMethod());
-});
 var app = builder.Build();
+
 // Configure the HTTP request pipeline. 
 if (app.Environment.IsDevelopment())
 {
@@ -87,8 +81,6 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseRouting();
-
-app.UseCors("AllowAnyOrigin");
 app.UseAuthentication();
 app.UseAuthorization();
 
