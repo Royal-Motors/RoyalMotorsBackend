@@ -8,6 +8,11 @@ using CarWebsiteBackend.Exceptions;
 using Microsoft.Extensions.Options;
 using System.Drawing;
 using Microsoft.AspNetCore.Cors;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
+using Microsoft.AspNetCore.Authorization;
 namespace CarWebsiteBackend.Controllers;
 
 [ApiController]
@@ -21,9 +26,15 @@ public class CarController : ControllerBase
         this.carInterface = carInterface;
     }
 
+    [Authorize]
     [HttpPost]
     public async Task<ActionResult<Car>> AddCar(CreateCar create_car)
     {
+        string emailClaim = HttpContext.User.FindFirst(ClaimTypes.Email)?.Value;
+        if(emailClaim != "royalmotorslb@gmail.com")
+        {
+            return Unauthorized("You are not authorized to edit this account.");
+        }
         try
         {
             var car = new Car(create_car.name, create_car.make, create_car.model, create_car.year, create_car.color, create_car.used, create_car.price, create_car.description, create_car.mileage, create_car.image_id_list, create_car.video_id);
@@ -77,10 +88,15 @@ public class CarController : ControllerBase
 
     }
 
+    [Authorize]
     [HttpDelete("{name}")]
     public async Task<IActionResult> DeleteCar(string name)
     {
-   
+        string emailClaim = HttpContext.User.FindFirst(ClaimTypes.Email)?.Value;
+        if(emailClaim != "royalmotorslb@gmail.com")
+        {
+            return Unauthorized("You are not authorized to edit this account.");
+        }
         try
         {
             await carInterface.DeleteCar(name);
@@ -98,9 +114,15 @@ public class CarController : ControllerBase
 
     }
 
+    [Authorize]
     [HttpPut]
     public async Task<ActionResult<Car>> Edit(Car car)
     {
+        string emailClaim = HttpContext.User.FindFirst(ClaimTypes.Email)?.Value;
+        if(emailClaim != "royalmotorslb@gmail.com")
+        {
+            return Unauthorized("You are not authorized to edit this account.");
+        }
         try
         {
             Car new_car = new Car(car.name, car.make, car.model, car.year, car.color, car.used, car.price, car.description,
