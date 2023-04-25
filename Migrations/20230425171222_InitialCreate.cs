@@ -43,6 +43,10 @@ namespace CarWebsiteBackend.Migrations
                     price = table.Column<int>(type: "int", nullable: false),
                     description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     mileage = table.Column<int>(type: "int", nullable: false),
+                    horsepower = table.Column<int>(type: "int", nullable: false),
+                    fuelconsumption = table.Column<float>(type: "real", nullable: false),
+                    fueltankcapacity = table.Column<int>(type: "int", nullable: false),
+                    transmissiontype = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     image_id_list = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     video_id = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },

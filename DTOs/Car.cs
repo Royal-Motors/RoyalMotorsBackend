@@ -15,7 +15,7 @@ namespace CarWebsiteBackend.DTOs
     {
         public Car([Required] string name, [Required] string make, [Required] string model, [Required] int year,
             [Required] string color, [Required] bool used, [Required] int price, [Optional] string description,
-            [Required] int mileage, [Optional] string image_id_list, [Optional] string video_id)
+            [Required] int mileage, [Required] int horsepower, [Required] float fuelconsumption, [Required] int fueltankcapacity, [Required] string transmissiontype, [Optional] string image_id_list, [Optional] string video_id)
         {
             this.name = name;
             this.make = make;
@@ -26,6 +26,10 @@ namespace CarWebsiteBackend.DTOs
             this.price = price;                  //(integer, required)
             this.description = description;      //(string, optional)
             this.mileage = mileage;              //(integer, required for used cars)
+            this.horsepower = horsepower;
+            this.fuelconsumption = fuelconsumption;
+            this.fueltankcapacity = fueltankcapacity;
+            this.transmissiontype = transmissiontype;
             this.image_id_list = image_id_list;  //(string, optional)
             this.video_id = video_id;            //(string, optional)
         }
@@ -40,6 +44,12 @@ namespace CarWebsiteBackend.DTOs
         public int price { get; set; }
         public string description { get; set; }
         public int mileage { get; set; }
+        public int horsepower { get; set; }
+        public float fuelconsumption { get; set; }
+
+        public int fueltankcapacity { get; set; }
+
+        public string transmissiontype { get; set; }
         public string image_id_list { get; set; }
         public string video_id { get; set; }
 

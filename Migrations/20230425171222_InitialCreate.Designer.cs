@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CarWebsiteBackend.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20230408180801_InitialCreate")]
+    [Migration("20230425171222_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -79,6 +79,15 @@ namespace CarWebsiteBackend.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<float>("fuelconsumption")
+                        .HasColumnType("real");
+
+                    b.Property<int>("fueltankcapacity")
+                        .HasColumnType("int");
+
+                    b.Property<int>("horsepower")
+                        .HasColumnType("int");
+
                     b.Property<string>("image_id_list")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -100,6 +109,10 @@ namespace CarWebsiteBackend.Migrations
 
                     b.Property<int>("price")
                         .HasColumnType("int");
+
+                    b.Property<string>("transmissiontype")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("used")
                         .HasColumnType("bit");

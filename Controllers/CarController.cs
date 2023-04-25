@@ -26,7 +26,7 @@ public class CarController : ControllerBase
     {
         try
         {
-            var car = new Car(create_car.name, create_car.make, create_car.model, create_car.year, create_car.color, create_car.used, create_car.price, create_car.description, create_car.mileage, create_car.image_id_list, create_car.video_id);
+            var car = new Car(create_car.name, create_car.make, create_car.model, create_car.year, create_car.color, create_car.used, create_car.price, create_car.description, create_car.mileage, create_car.horsepower, create_car.fuelconsumption, create_car.fueltankcapacity, create_car.transmissiontype, create_car.image_id_list, create_car.video_id);
             await carInterface.AddCar(car);
             return CreatedAtAction(nameof(AddCar), new { name = car.name }, car);
         }
@@ -104,7 +104,7 @@ public class CarController : ControllerBase
         try
         {
             Car new_car = new Car(car.name, car.make, car.model, car.year, car.color, car.used, car.price, car.description,
-            car.mileage, car.image_id_list, car.video_id);
+            car.mileage, car.horsepower, car.fuelconsumption, car.fueltankcapacity, car.transmissiontype, car.image_id_list, car.video_id);
 
             //await is related to async, wait it to sync.  
             await carInterface.EditCar(new_car);
