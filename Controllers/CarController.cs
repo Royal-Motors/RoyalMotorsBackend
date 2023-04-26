@@ -1,13 +1,7 @@
 ﻿using CarWebsiteBackend.DTOs;
 using CarWebsiteBackend.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using System.Text.RegularExpressions;
-using CarWebsiteBackend.Exceptions.ProfileExceptions;
 using CarWebsiteBackend.Exceptions.CarExceptions;
-using CarWebsiteBackend.Exceptions;
-using Microsoft.Extensions.Options;
-using System.Drawing;
-using Microsoft.AspNetCore.Cors;
 namespace CarWebsiteBackend.Controllers;
 
 [ApiController]
@@ -79,8 +73,7 @@ public class CarController : ControllerBase
 
     [HttpDelete("{name}")]
     public async Task<IActionResult> DeleteCar(string name)
-    {
-   
+    {   
         try
         {
             await carInterface.DeleteCar(name);
@@ -95,7 +88,6 @@ public class CarController : ControllerBase
             }
             throw;
         }
-
     }
 
     [HttpPut]
