@@ -1,13 +1,10 @@
 ﻿using CarWebsiteBackend.DTOs;
 using CarWebsiteBackend.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using System.Text.RegularExpressions;
 using CarWebsiteBackend.Exceptions.ProfileExceptions;
 using CarWebsiteBackend.Exceptions.CarExceptions;
 using CarWebsiteBackend.Exceptions.TestDriveExceptions;
-using CarWebsiteBackend.Exceptions;
-using Microsoft.Extensions.Options;
-using System.Drawing;
+using CarWebsiteBackend.Extensions;
 
 namespace CarWebsiteBackend.Controllers;
 
@@ -29,6 +26,10 @@ public class TestDriveController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<TestDrive>> AddTestDrive(TestDriveRequest request)
     {
+        if (!request.AccountEmail.IsValidEmail())
+        {
+            return BadRequest("Invalid email format.");
+        }
         try
         {
             var account = await accountStore.GetAccount(request.AccountEmail);
@@ -60,7 +61,6 @@ public class TestDriveController : ControllerBase
     [HttpDelete("{Id}")]
     public async Task<IActionResult> DeleteTestDrive(int Id)
     {
-
         try
         {
             await testdriveInterface.DeleteTestDrive(Id);
@@ -118,6 +118,10 @@ public class TestDriveController : ControllerBase
     [HttpGet("account/{Account_Email}")]
     public async Task<ActionResult<List<TestDrive>>> GetAllTestDriveByAccountEmail(string Account_Email)
     {
+        if (!Account_Email.IsValidEmail())
+        {
+            return BadRequest("Invalid email format.");
+        }
         try
         {
             var test_drives = await testdriveInterface.GetAllTestDriveByAccountEmail(Account_Email);
@@ -131,6 +135,5 @@ public class TestDriveController : ControllerBase
             }
             throw;
         }
-
     }
 }

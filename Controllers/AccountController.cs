@@ -1,13 +1,8 @@
 ﻿using CarWebsiteBackend.DTOs;
 using CarWebsiteBackend.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using System.Text.RegularExpressions;
-using CarWebsiteBackend.Email;
 using CarWebsiteBackend.Exceptions.ProfileExceptions;
-using Microsoft.AspNetCore.Rewrite;
-using System;
-using CarWebsiteBackend.HTMLContent;
-using BCrypt.Net;
+using CarWebsiteBackend.Extensions;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -28,24 +23,6 @@ public class AccountController : ControllerBase
         this.accountInterface = accountInterface;
     }
 
-     private bool IsValidEmail(string email)
-     {
-        if (string.IsNullOrWhiteSpace(email))
-        {
-            return false;
-        }
-        try
-        {
-            return Regex.IsMatch(email,
-                @"^[^@\s]+@[^@\s]+\.[^@\s]+$",
-                RegexOptions.IgnoreCase, TimeSpan.FromMilliseconds(250));
-        }
-        catch (RegexMatchTimeoutException)
-        {
-            return false;
-        }
-     }
-
     private ContentResult verifySuccess()
     {
         return new ContentResult { Content = HTMLContent.HTMLContent.verifySuccessWebsite(), ContentType = "text/html" };
@@ -64,7 +41,7 @@ public class AccountController : ControllerBase
     [HttpPost("sign_up")]
     public async Task<ActionResult<Account>> SignUp(CreateAccount create_account)
     {
-        if(!IsValidEmail(create_account.email))
+        if(!create_account.email.IsValidEmail())
         {
             return BadRequest("Invalid email format.");
         }
@@ -89,6 +66,10 @@ public class AccountController : ControllerBase
     [HttpGet("verify/{email}/{code}")]
     public async Task<ActionResult<Account>> verify(string email, string code)
     {
+        if (!email.IsValidEmail())
+        {
+            return BadRequest("Invalid email format.");
+        }
         try
         {
             var account = await accountInterface.GetAccount(email);
@@ -104,12 +85,12 @@ public class AccountController : ControllerBase
         {
             return verifyFail();
         }
-
     }
+
     [HttpGet("{email}"), Authorize]
     public async Task<ActionResult<Account>> GetAccount(string email)
     {
-        if(!IsValidEmail(email))
+        if (!email.IsValidEmail())
         {
             return BadRequest("Invalid email format.");
         }
@@ -136,7 +117,7 @@ public class AccountController : ControllerBase
     [HttpDelete("delete/{email}"), Authorize]
     public async Task<IActionResult> DeleteAccount(string email)
     {
-        if(!IsValidEmail(email))
+        if (!email.IsValidEmail())
         {
             return BadRequest("Invalid email format.");
         }
@@ -165,7 +146,7 @@ public class AccountController : ControllerBase
     [HttpPut("edit/{email}"), Authorize]
     public async Task<ActionResult<Account>> Edit(EditedAcc editedAcc, string email)
     {
-        if (!IsValidEmail(email))
+        if (!email.IsValidEmail())
         {
             return BadRequest("Invalid email format");
         }
@@ -192,7 +173,7 @@ public class AccountController : ControllerBase
     [HttpPost("sign_in")]
     public async Task<ActionResult<Account>> SignIn(SignInRequest request)
     {
-        if(!IsValidEmail(request.email))
+        if(!request.email.IsValidEmail())
         {
             return BadRequest("Invalid email format.");
         }
