@@ -13,6 +13,8 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using Microsoft.AspNetCore.Authorization;
+using CarWebsiteBackend.Exceptions;
+
 namespace CarWebsiteBackend.Controllers;
 
 [ApiController]
@@ -187,24 +189,20 @@ public class AccountController : ControllerBase
             throw;
         }
     }
-    [HttpGet("sign_in")]
-    public async Task<ActionResult<Account>> SignIn(string email, string password)
+    [HttpPost("sign_in")]
+    public async Task<ActionResult<Account>> SignIn(SignInRequest request)
     {
-        if(!IsValidEmail(email))
+        if(!IsValidEmail(request.email))
         {
             return BadRequest("Invalid email format.");
         }
-        if (string.IsNullOrWhiteSpace(password))
-        {
-            return BadRequest("Password cannot be empty");
-        }
         try{
-            var account = await accountInterface.GetAccount(email);
+            var account = await accountInterface.GetAccount(request.email);
             if (!account.verified)
             {
                 return Unauthorized("Unverified email address");
             }
-            var result = BCrypt.Net.BCrypt.Verify(password, account.password);
+            var result = BCrypt.Net.BCrypt.Verify(request.password, account.password);
             if (result){
                 var claims = new[] {
                         new Claim(ClaimTypes.Email, account.email)
@@ -224,13 +222,16 @@ public class AccountController : ControllerBase
                     expiration = jwtSecurityToken.ValidTo
                 });
             }
-            return Unauthorized("Incorrect password.");
+            else
+            {
+                throw new IncorrectPasswordException();
+            }
         }
         catch (Exception e)
         {
-            if (e is ProfileNotFoundException)
+            if (e is ProfileNotFoundException || e is IncorrectPasswordException)
             {
-                return NotFound($"Account with email {email} not found.");
+                return BadRequest($"Email or password is incorrect. Try again or sign up.");
             }
             throw;
         }
