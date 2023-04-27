@@ -2,6 +2,11 @@
 using CarWebsiteBackend.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using CarWebsiteBackend.Exceptions.CarExceptions;
+using CarWebsiteBackend.Exceptions.ProfileExceptions;
+using CarWebsiteBackend.Extensions;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
+
 namespace CarWebsiteBackend.Controllers;
 
 [ApiController]
@@ -90,13 +95,13 @@ public class CarController : ControllerBase
         }
     }
 
-    [HttpPut]
-    public async Task<ActionResult<Car>> Edit(Car car)
+    [HttpPut("edit/{name}")]
+    public async Task<ActionResult<Car>> Edit(EditedCar editedCar, string name)
     {
         try
         {
-            Car new_car = new Car(car.name, car.make, car.model, car.year, car.color, car.used, car.price, car.description,
-            car.mileage, car.horsepower, car.fuelconsumption, car.fueltankcapacity, car.transmissiontype, car.image_id_list, car.video_id);
+            Car new_car = new Car(name, editedCar.make, editedCar.model, editedCar.year, editedCar.color, editedCar.used, editedCar.price, editedCar.description,
+            editedCar.mileage, editedCar.horsepower, editedCar.fuelconsumption, editedCar.fueltankcapacity, editedCar.transmissiontype, editedCar.image_id_list, editedCar.video_id);
 
             //await is related to async, wait it to sync.  
             await carInterface.EditCar(new_car);
@@ -106,7 +111,7 @@ public class CarController : ControllerBase
         {
             if(e is CarNotFoundException)
             {
-                return NotFound($"Car with name {car.name} not found.");
+                return NotFound($"Car with name {name} not found.");
             }
             throw;
         }
