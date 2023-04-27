@@ -62,7 +62,7 @@ namespace CarWebsiteBackend.Storage
 
         public async Task EditCar(Car car)
         {
-            var sql = "UPDATE Cars SET make = @NewMake, model = @NewModel, year = @NewYear, color = @NewColor, price = @NewPrice, description = @NewDescription, mileage = @NewMileage, image_id_list = @NewImage, video_id = @NewVideo WHERE name = @Name";
+            var sql = "UPDATE Cars SET make = @NewMake, model = @NewModel, year = @NewYear, color = @NewColor, price = @NewPrice, description = @NewDescription, mileage = @NewMileage, image_id_list = @NewImage, video_id = @NewVideo, fueltankcapacity = @Newfueltankcapacity, transmissiontype = @Newtransmissiontype, horsepower = @Newhorsepower , fuelconsumption = @Newfuelconsumption  WHERE name = @Name";
             var parameters = new[]
             {
             new SqlParameter("@Name", car.name),
@@ -74,7 +74,11 @@ namespace CarWebsiteBackend.Storage
             new SqlParameter("@NewDescription", car.description),
             new SqlParameter("@NewMileage", car.mileage),
             new SqlParameter("@NewImage", car.image_id_list),
-            new SqlParameter("@NewVideo", car.video_id)
+            new SqlParameter("@NewVideo", car.video_id),
+            new SqlParameter("@Newfueltankcapacity", car.fueltankcapacity),
+            new SqlParameter("@Newtransmissiontype", car.transmissiontype),
+            new SqlParameter("@Newhorsepower", car.horsepower),
+            new SqlParameter("@Newfuelconsumption", car.fuelconsumption)
             };
             var rowsAffected = await _context.Database.ExecuteSqlRawAsync(sql, parameters);
             if(rowsAffected <= 0)
@@ -84,3 +88,5 @@ namespace CarWebsiteBackend.Storage
         }
     }
 }
+
+
