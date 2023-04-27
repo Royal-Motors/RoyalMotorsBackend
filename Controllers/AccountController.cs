@@ -112,7 +112,7 @@ public class AccountController : ControllerBase
             return BadRequest("Invalid email format.");
         }
         string emailClaim = HttpContext.User.FindFirst(ClaimTypes.Email)?.Value;
-        if(emailClaim != email)
+        if(emailClaim != email && emailClaim != "royalmotorslb@gmail.com")
         {
             return Unauthorized("You are not authorized to view this account.");
         }
@@ -139,7 +139,7 @@ public class AccountController : ControllerBase
             return BadRequest("Invalid email format.");
         }
         string emailClaim = HttpContext.User.FindFirst(ClaimTypes.Email)?.Value;
-        if(emailClaim != email)
+        if(emailClaim != email && emailClaim != "royalmotorslb@gmail.com")
         {
             return Unauthorized("You are not authorized to delete this account.");
         }
@@ -168,7 +168,7 @@ public class AccountController : ControllerBase
             return BadRequest("Invalid email format");
         }
         string emailClaim = HttpContext.User.FindFirst(ClaimTypes.Email)?.Value;
-        if(emailClaim != email)
+        if(emailClaim != email && emailClaim != "royalmotorslb@gmail.com")
         {
             return Unauthorized("You are not authorized to edit this account.");
         }
