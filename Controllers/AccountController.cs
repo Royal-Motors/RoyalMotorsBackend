@@ -140,7 +140,6 @@ public class AccountController : ControllerBase
             }
             throw;
         }
-
     }
 
     [HttpPut("edit/{email}"), Authorize]
@@ -212,10 +211,9 @@ public class AccountController : ControllerBase
         {
             if (e is ProfileNotFoundException || e is IncorrectPasswordException)
             {
-                return BadRequest($"Email or password is incorrect. Try again or sign up.");
+                return Unauthorized($"Email or password is incorrect. Try again or sign up.");
             }
             throw;
         }
     }
 }
-
