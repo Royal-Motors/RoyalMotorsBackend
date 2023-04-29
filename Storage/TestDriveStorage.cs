@@ -67,13 +67,14 @@ namespace CarWebsiteBackend.Storage
 
         public async Task DeleteTestDrive(int Id)
         {
-            var sql = "DELETE FROM Accounts WHERE Id = @Id";
+            var sql = "DELETE FROM TestDrives WHERE Id = @Id";
             var parameters = new[] { new SqlParameter("@Id", Id) };
             var rowsAffected = await _context.Database.ExecuteSqlRawAsync(sql, parameters);
             if (rowsAffected <= 0)
             {
                 throw new TestDriveNotFoundException();
             }
+            return;
         }
 
         public async Task<List<TestDrive>> GetAllTestDriveByAccountEmail(string Email)
