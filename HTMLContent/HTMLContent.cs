@@ -55,9 +55,10 @@
                         <form method='get' action='" + link + @"'>
                             <button type='submit' class='button'>Verify Email</button>
                         </form>
+                        <p> You can also click use the link: " + link + @" </p>
                     </div>
                         <div class='footer'>
-                        <p>This email was sent by Royal Motors, located at Dahye, Beirut.</p>
+                        <p>This email was sent by Royal Motors, located at Clemenceau St. Hamra, Beirut.</p>
                     </div>
                 </body>
             </html>";
