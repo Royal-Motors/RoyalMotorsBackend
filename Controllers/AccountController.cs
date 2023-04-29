@@ -169,6 +169,7 @@ public class AccountController : ControllerBase
             throw;
         }
     }
+
     [HttpPost("sign_in")]
     public async Task<ActionResult<Account>> SignIn(SignInRequest request)
     {

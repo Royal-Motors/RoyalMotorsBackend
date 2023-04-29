@@ -9,7 +9,7 @@ using CarWebsiteBackend.Extensions;
 namespace CarWebsiteBackend.Controllers;
 
 [ApiController]
-[Route("test_drive")]
+[Route("testdrive")]
 public class TestDriveController : ControllerBase
 {
     private readonly ITestDriveInterface testdriveInterface;
@@ -132,6 +132,24 @@ public class TestDriveController : ControllerBase
             if (e is TestDriveNotFoundException)
             {
                 return NotFound($"No test drives found for user {Account_Email}.");
+            }
+            throw;
+        }
+    }
+
+    [HttpGet]
+    public async Task<ActionResult<List<TestDrive>>> GetAllTestDrives()
+    {
+        try
+        {
+            var test_drives = await testdriveInterface.GetAllTestDrives();
+            return Ok(test_drives);
+        }
+        catch (Exception e)
+        {
+            if (e is TestDriveNotFoundException)
+            {
+                return NotFound("No test drives have been scheduled.");
             }
             throw;
         }

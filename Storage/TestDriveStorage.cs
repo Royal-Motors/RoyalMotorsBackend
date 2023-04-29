@@ -1,15 +1,9 @@
 using CarWebsiteBackend.Data;
 using CarWebsiteBackend.DTOs;
-using CarWebsiteBackend.Email;
-using CarWebsiteBackend.Exceptions.ProfileExceptions;
 using CarWebsiteBackend.Exceptions.TestDriveExceptions;
 using CarWebsiteBackend.Interfaces;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Identity.Client;
-using Azure.Storage.Blobs.Models;
-
 namespace CarWebsiteBackend.Storage
 {
     public class TestDriveStorage : ITestDriveInterface
@@ -20,6 +14,12 @@ namespace CarWebsiteBackend.Storage
         {
             _context = context;
         }
+
+        private int UpToOneHour(int unixTime)
+        {
+            return unixTime + 3600;
+        }
+
         public async Task AddTestDrive(TestDrive test_drive)
         {
             using (var transaction = await _context.Database.BeginTransactionAsync())
@@ -30,14 +30,16 @@ namespace CarWebsiteBackend.Storage
                         .FromSqlRaw("SELECT * FROM TestDrives")
                         .ToListAsync();
 
+                    var testDriveEndTime = UpToOneHour(test_drive.Time);
+
                     if (existingTestDrives.Any(td=> td.AccountId == test_drive.AccountId && td.CarId == test_drive.CarId))
                     {
-                        throw new TestDriveConflictException("Test drive already exists for this car and account with at this time or different time.");
+                        throw new TestDriveConflictException("Test drive already exists for this car and account.");
                     }
 
-                    if (existingTestDrives.Any(td => td.AccountId == test_drive.AccountId && td.Time == test_drive.Time))
+                    if (existingTestDrives.Any(td => td.AccountId == test_drive.AccountId && td.Time < testDriveEndTime && UpToOneHour(td.Time) > test_drive.Time))
                     {
-                        throw new TestDriveConflictException("User Cannot have two test drives at the same time.");
+                        throw new TestDriveConflictException("User cannot have two test drives overlapping in time.");
                     }
 
                     if (existingTestDrives.Count(td => td.Time == test_drive.Time) >= 2)
@@ -45,9 +47,9 @@ namespace CarWebsiteBackend.Storage
                         throw new TestDriveConflictException("Two test drives already exist for this time.");
                     }
 
-                    if (existingTestDrives.Any(td => td.Time == test_drive.Time && td.CarId == test_drive.CarId))
+                    if (existingTestDrives.Any(td => td.CarId == test_drive.CarId && td.Time < testDriveEndTime && UpToOneHour(td.Time) > test_drive.Time))
                     {
-                        throw new TestDriveConflictException("A test drive already exists for this car and time.");
+                        throw new TestDriveConflictException("A test drive already exists for this car at this time.");
                     }
 
                     await _context.TestDrives.AddAsync(test_drive);
@@ -111,6 +113,19 @@ namespace CarWebsiteBackend.Storage
                 throw new TestDriveNotFoundException();
             }
             return testDrive;
+        }
+
+        public async Task<List<TestDrive>> GetAllTestDrives()
+        {
+            var testDrives = await _context.TestDrives
+                .Include(td => td.Car)
+                .Include(td => td.Account)
+                .ToListAsync();
+            if (testDrives.Count == 0)
+            {
+                throw new TestDriveNotFoundException();
+            }
+            return testDrives;
         }
     }
 }
