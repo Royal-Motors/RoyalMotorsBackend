@@ -1,4 +1,4 @@
-﻿using CarWebsiteBackend.Email;
+using CarWebsiteBackend.Email;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
@@ -9,74 +9,63 @@ namespace CarWebsiteBackend.HTMLContent
         public static string emailBody(string link) 
         {
             string emailBody = @"
-        <html>
-        <head>
-        <title>Royal Motors - Email Verification</title>
-
-        <style>
-            body {
-                margin: 0;
-                padding: 0;
-                font-family: Arial, sans-serif;
-                font-size: 16px;
-                color: #444444;
-                }
-            .header {
-                background-color: #1c2f36;
-                color: #ffffff;
-                padding: 20px;
-                }
-            .header h1 {
-                margin: 0;
-                font-size: 28px;
-                }
-            .button {
-            display: inline-block;
-            padding: 10px 20px;
-            background-color: #1c2f36;
-            color: #ffffff;
-            text-decoration: none;
-            border-radius: 5px;
-            margin-top: 10px;
-            margin-left: 3rem;
-            }
-            .button:hover {
-                background-color: #388e3c;
-            }
-            .footer {
-                background-color: #1c2f36; 
-                padding: 20px;
-                text-align: center;
-                font-size: 14px;
-                color: #ffffff;
-            }
-            .content p{
-                margin-left: 3rem;
-            }             
-        </style>
-
-        </head>
-
-        <body>
-            <div class='header'>
-                <h1>Royal Motors</h1>
-            </div>
-
-            <div class='content'>
-                <h2 style='background-color: #1c2f36; color: #ffffff; padding: 20px;'>Verify your email address</h2>
-
-                <p>Please click the button below to verify your email address:</p>
-
-                <form method='get' action='" + link + @"'>
-                    <button type='submit' class='button'>Verify Email</button>
-                </form>
-            </div>
-                <div class='footer'>
-                <p>This email was sent by Royal Motors, located at Hamra, Beirut.</p>
-            </div>
-        </body>
-
-         </html>";
+            <html>
+                <head>
+                    <title>Royal Motors - Email Verification</title>
+                    <style>
+                        body {
+                            margin: 0;
+                            padding: 0;
+                            font-family: Arial, sans-serif;
+                            font-size: 16px;
+                            color: #444444;
+                            }
+                        .header {
+                            background-color: #0d47a1;
+                            color: #ffffff;
+                            padding: 20px;
+                            }
+                        .header h1 {
+                            margin: 0;
+                            font-size: 28px;
+                            }
+                        .button {
+                            display: inline-block;
+                            padding: 10px 20px;
+                            background-color: #4caf50;
+                            color: #ffffff;
+                            text-decoration: none;
+                            border-radius: 5px;
+                            margin-top: 20px;
+                            }
+                        .button:hover {
+                            background-color: #388e3c;
+                        }
+                        .footer {
+                            background-color: #f2f2f2;
+                            padding: 20px;
+                            text-align: center;
+                            font-size: 14px;
+                            }
+                    </style>
+                </head>
+                <body>
+                    <div class='header'>
+                        <h1>Royal Motors</h1>
+                    </div>
+                    <div class='content'>
+                        <h2 style='background-color: #0d47a1; color: #ffffff; padding: 10px;'>Verify your email address</h2>
+                        <p>Please click the button below to verify your email address:</p>
+                        <form method='get' action='" + link + @"'>
+                            <button type='submit' class='button'>Verify Email</button>
+                        </form>
+                        <p> You can also use the following link: " + link + @"
+                    </div>
+                        <div class='footer'>
+                        <p>This email was sent by Royal Motors, located at Clemenceau St. Hamra, Beirut.</p>
+                    </div>
+                </body>
+            </html>";
             return emailBody;
         }
 
@@ -227,7 +216,7 @@ namespace CarWebsiteBackend.HTMLContent
             <p>Thank you for choosing Royal Motors!</p>
         </div>
         <div class='footer'>
-            <p style='color: #ffffff'>This email was sent by Royal Motors, located at Hamra, Beirut.</p>
+            <p style='color: #ffffff'>This email was sent by Royal Motors, located at Clemenceau St. Hamra, Beirut.</p>
         </div>
     </body>
         </html>";
@@ -323,7 +312,7 @@ namespace CarWebsiteBackend.HTMLContent
         </ div >
 
         < div class='footer'>
-            <p style = 'color: #ffffff' > This email was sent by Royal Motors, located at Hamra, Beirut.</p>
+            <p style = 'color: #ffffff' > This email was sent by Royal Motors, located at Clemenceau St. Hamra, Beirut.</p>
         </div>
     </body>
  </html>";
