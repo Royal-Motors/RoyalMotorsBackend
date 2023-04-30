@@ -6,6 +6,11 @@ using CarWebsiteBackend.Exceptions.ProfileExceptions;
 using CarWebsiteBackend.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
+using System.Collections.Generic;
+using System.Collections;
+using CarWebsiteBackend.Storage;
+
+
 
 namespace CarWebsiteBackend.Controllers;
 
@@ -14,10 +19,15 @@ namespace CarWebsiteBackend.Controllers;
 public class CarController : ControllerBase
 {
     private readonly CarInterface carInterface;
+    private readonly ITestDriveInterface testdriveInterface;
+    private readonly IAccountInterface accountStore;
 
-    public CarController(CarInterface carInterface)
+
+    public CarController(CarInterface carInterface, ITestDriveInterface testdriveInterface, IAccountInterface accountStore)
     {
         this.carInterface = carInterface;
+        this.testdriveInterface = testdriveInterface;
+        this.accountStore = accountStore;
     }
 
     [HttpPost]
@@ -100,6 +110,11 @@ public class CarController : ControllerBase
     {
         try
         {
+            List<TestDrive> testDrivesList = await testdriveInterface.GetAllTestDriveByCarName(name);
+            foreach (TestDrive testDrive in testDrivesList)
+            {
+                Email.Email.sendEmail(testDrive.Account.email, name + " Car Has Been Sold", HTMLContent.HTMLContent.CarSoldEmail(testDrive.Account.firstname + " " + testDrive.Account.lastname, name));
+            }
             await carInterface.SellCar(name);
             return Ok("Car successfully counted Sold");
         }
