@@ -11,50 +11,59 @@ namespace CarWebsiteBackend.HTMLContent
             string emailBody = @"
             <html>
                 <head>
-                    <title>Royal Motors - Email Verification</title>
-                    <style>
-                        body {
-                            margin: 0;
-                            padding: 0;
-                            font-family: Arial, sans-serif;
-                            font-size: 16px;
-                            color: #444444;
-                            }
-                        .header {
-                            background-color: #0d47a1;
-                            color: #ffffff;
-                            padding: 20px;
-                            }
-                        .header h1 {
-                            margin: 0;
-                            font-size: 28px;
-                            }
-                        .button {
-                            display: inline-block;
-                            padding: 10px 20px;
-                            background-color: #4caf50;
-                            color: #ffffff;
-                            text-decoration: none;
-                            border-radius: 5px;
-                            margin-top: 20px;
-                            }
-                        .button:hover {
-                            background-color: #388e3c;
+                <title>Royal Motors - Email Verification</title>
+                <style>
+                    body {
+                        margin: 0;
+                        padding: 0;
+                        font-family: Arial, sans-serif;
+                        font-size: 16px;
+                        color: #444444;
                         }
-                        .footer {
-                            background-color: #f2f2f2;
-                            padding: 20px;
-                            text-align: center;
-                            font-size: 14px;
-                            }
-                    </style>
+                    .header {
+                        background-color: #1c2f36;
+                        color: #ffffff;
+                        padding: 20px;
+                        }
+                    .header h1 {
+                        margin: 0;
+                        font-size: 28px;
+                        }
+                    .button {
+                        display: inline-block;
+                        padding: 10px 20px;
+                        background-color: #1c2f36;
+                        color: #ffffff;
+                        text-decoration: none;
+                        border-radius: 5px;
+                        margin-top: 20px;
+                        margin-left: 3rem;
+                        }
+                    .button:hover {
+                        background-color: #95c197;
+                    }
+                    .footer {
+                        background-color: #1c2f36;
+                        padding: 20px;
+                        text-align: center;
+                        font-size: 14px;
+                        color: white;
+                        }
+
+
+                        .content p{
+                            margin-left: 3rem;
+                        }
+                </style>
+
                 </head>
+
                 <body>
                     <div class='header'>
                         <h1>Royal Motors</h1>
                     </div>
                     <div class='content'>
-                        <h2 style='background-color: #0d47a1; color: #ffffff; padding: 10px;'>Verify your email address</h2>
+                        <h2 style='background-color: #1c2f36; color: #ffffff; padding: 20px;'>Verify your email address</h2>
                         <p>Please click the button below to verify your email address:</p>
                         <form method='get' action='" + link + @"'>
                             <button type='submit' class='button'>Verify Email</button>
@@ -134,7 +143,7 @@ namespace CarWebsiteBackend.HTMLContent
             return html;
         }
 
-        public static string carsoldWebsite(string name, string car_name)
+        public static string CarSoldEmail(string user_name, string car_name)
         {
             string html = @"
         <html>
@@ -203,16 +212,17 @@ namespace CarWebsiteBackend.HTMLContent
 
         <div class='content'>
             <h2>"+car_name + @" Car Has Been Sold</h2>
-            <p>Hello " + name + @",</p>
+            <p>Hello " + user_name + @",</p>
             <p>We wanted to let you know that the Car " +car_name+ @" you were interested in has been sold. <br> We appreciate your interest in our company and hope to assist you with your future car buying needs.</p>
             <p>If you have any questions or would like to learn more about our current inventory, please visit our website or contact us directly.</p>
             <a href=""https://royalmotors.pages.dev/"" class=""button"">Visit Our Website</a>
-        </div>
-            <p>The following car has been sold:</p>
-            <ul>
-                <li>Make: "" + carMake + @""</li>
-                <li>Model: "" + carModel + @""</li>
-            </ul>
+        </div>" +
+            //<p>The following car has been sold:</p>
+            //<ul>
+            //    <li>Make: "" + carMake + @""</li>
+            //    <li>Model: " + carModel + @"</li>
+            //</ul>
+            @"
             <p>Thank you for choosing Royal Motors!</p>
         </div>
         <div class='footer'>
@@ -223,7 +233,7 @@ namespace CarWebsiteBackend.HTMLContent
             return html;
         }
 
-        public static string testdriveReminderWebsite(string name, string date, string time, string car_name)
+        public static string TestdriveReminderEmail(string name, string date, string time, string car_name)
         {
             string html = @"
         <html>
