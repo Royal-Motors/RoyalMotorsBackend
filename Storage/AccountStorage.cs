@@ -83,5 +83,13 @@ namespace CarWebsiteBackend.Storage
                 throw new ProfileNotFoundException();
             }
         }
+
+        public async Task DeleteUnverifiedAccounts()
+        {
+            DateTime cutoffDate = DateTime.UtcNow.AddHours(-24);
+            string sql = @"DELETE FROM Accounts WHERE verified = false AND CreationDate < {0}";
+            var rowsAffected = await _context.Database.ExecuteSqlRawAsync(sql, cutoffDate);
+
+        }
     }
 }

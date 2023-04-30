@@ -10,4 +10,6 @@ public interface IAccountInterface
     Task DeleteAccount(string email);
 
     Task VerifyAccount(string email);
+
+    Task DeleteUnverifiedAccounts();
 }

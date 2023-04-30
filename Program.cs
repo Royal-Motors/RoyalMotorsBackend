@@ -10,12 +10,14 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using CarWebsiteBackend;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container
 
 builder.Services.AddControllers();
+builder.Services.AddHostedService<MyBackgroundService>();
 builder.Services.AddDbContext<DataContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("SqlConnection")));
 builder.Services.AddScoped<IAccountInterface, AccountStorage>();
 builder.Services.AddScoped<CarInterface, CarStorage>();
@@ -93,6 +95,7 @@ app.UseHttpsRedirection();
 
 
 app.MapControllers();
+
 
 app.Run();
 
