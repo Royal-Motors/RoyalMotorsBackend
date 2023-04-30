@@ -40,6 +40,17 @@ namespace CarWebsiteBackend.Storage
             }
         }
 
+        public async Task SellCar(string name)
+        {
+            var sql = "DELETE FROM Cars WHERE name = @Name";
+            var parameters = new[] { new SqlParameter("@Name", name) };
+            var rowsAffected = await _context.Database.ExecuteSqlRawAsync(sql, parameters);
+            if (rowsAffected <= 0)
+            {
+                throw new CarNotFoundException();
+            }
+        }
+
         public async Task<Car> GetCar(string name)
         {
             var Car = await _context.Cars.Where(p => p.name == name).FirstOrDefaultAsync();
