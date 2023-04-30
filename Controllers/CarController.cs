@@ -95,6 +95,25 @@ public class CarController : ControllerBase
         }
     }
 
+    [HttpDelete("sell/{name}")]
+    public async Task<IActionResult> SellCar(string name)
+    {
+        try
+        {
+            await carInterface.SellCar(name);
+            return Ok("Car successfully counted Sold");
+        }
+
+        catch (Exception e)
+        {
+            if (e is CarNotFoundException)
+            {
+                return NotFound($"Car with name {name} not found.");
+            }
+            throw;
+        }
+    }
+
     [HttpPut("edit/{name}")]
     public async Task<ActionResult<Car>> Edit(EditedCar editedCar, string name)
     {
