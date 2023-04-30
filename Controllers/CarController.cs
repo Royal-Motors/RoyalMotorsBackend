@@ -101,6 +101,8 @@ public class CarController : ControllerBase
         try
         {
             await carInterface.SellCar(name);
+       
+            Email.Email.sendEmail(account.email, name + " Car Has Been Sold", HTMLContent.HTMLContent.carsoldWebsite( user_name, name));
             return Ok("Car successfully counted Sold");
         }
 
