@@ -29,7 +29,7 @@ namespace CarWebsiteBackend.DTOs
             this.fuelconsumption = fuelconsumption;
             this.fueltankcapacity = fueltankcapacity;
             this.transmissiontype = transmissiontype;
-            this.image_id_list = image_id_list;  //(string, optional)
+            this.image_id_list = (image_id_list == null || image_id_list == "string" || image_id_list == "") ? ",,,,,,,,," : image_id_list;  //(string, optional)
             this.video_id = video_id;            //(string, optional)
         }
         public string name { get; set; }

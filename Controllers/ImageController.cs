@@ -1,6 +1,8 @@
 ﻿using CarWebsiteBackend.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using CarWebsiteBackend.Exceptions;
+using CarWebsiteBackend.DTOs;
+using CarWebsiteBackend.Exceptions.CarExceptions;
 
 namespace CarWebsiteBackend.Controllers;
 
@@ -9,10 +11,12 @@ namespace CarWebsiteBackend.Controllers;
 public class ImageController : ControllerBase
 {
     private readonly IImageInterface imageInterface;
+    private readonly CarInterface carInterface;
 
-    public ImageController(IImageInterface imageInterface)
+    public ImageController(IImageInterface imageInterface, CarInterface carInterface)
     {
         this.imageInterface = imageInterface;
+        this.carInterface = carInterface;
     }
 
     [HttpGet("{id}")]
@@ -36,10 +40,18 @@ public class ImageController : ControllerBase
     }
 
     [HttpDelete("{id}")]
-    public async Task<ActionResult> DeleteImage(string? id)
+    public async Task<ActionResult> DeleteImage(string carName, int order)
     {
         try
         {
+            var car = await carInterface.GetCar(carName);
+            string image_id_list = car.image_id_list;
+            string[] imageArray = image_id_list.Split(',');
+            string id = imageArray[order - 1];
+            imageArray[order - 1] = "";
+            string edited_image_id_list = string.Join(",", imageArray);
+            var editedCar = new Car(car.name, car.make, car.model, car.year, car.color, car.used, car.price, car.description, car.mileage, car.horsepower, car.fuelconsumption, car.fueltankcapacity, car.transmissiontype, edited_image_id_list, car.video_id);
+            await carInterface.EditCar(editedCar);
             await imageInterface.DeleteImage(id);
             return Ok($"Image with id {id} deleted");
         }
@@ -47,7 +59,7 @@ public class ImageController : ControllerBase
         {
             if (e is ImageNotFoundException)
             {
-                return NotFound($"Image with id {id} not found");
+                return NotFound($"Image not found");
             }
             throw;
         }
@@ -55,14 +67,34 @@ public class ImageController : ControllerBase
 
 
     [HttpPost]
-    public async Task<IActionResult> PostImage(IFormFile File)
+    public async Task<IActionResult> PostImage(IFormFile File, string carName, int order)
     {
-        var type = File.ContentType;
-        if (type != "image/jpeg" && type != "image/png")
+        try
         {
-            return BadRequest("Content type not supported, upload a 'jpeg' or 'png'");
+            var car = await carInterface.GetCar(carName);
+            string image_id_list = car.image_id_list;
+            string[] imageArray = image_id_list.Split(',');
+            string carNameNoSpace = carName.Replace(" ", "_");
+            string carNameEdited = $"{carNameNoSpace}_{order}";
+            imageArray[order - 1] = carNameEdited;
+            string edited_image_id_list = string.Join(",", imageArray);
+            var editedCar = new Car(car.name, car.make, car.model, car.year, car.color, car.used, car.price, car.description, car.mileage, car.horsepower, car.fuelconsumption, car.fueltankcapacity, car.transmissiontype, edited_image_id_list, car.video_id);
+            await carInterface.EditCar(editedCar);
+            var type = File.ContentType;
+            if (type != "image/jpeg" && type != "image/png")
+            {
+                return BadRequest("Content type not supported, upload a 'jpeg' or 'png'");
+            }
+            await imageInterface.UploadImage(carNameEdited, File);
+            return Ok("Image successfully uploaded.");
         }
-        await imageInterface.UploadImage(Path.GetFileNameWithoutExtension(File.FileName), File);
-        return Ok("Image successfully uploaded.");
+        catch (Exception e)
+        {
+            if (e is CarNotFoundException)
+            {
+                return NotFound("car not found");
+            }
+            throw;
+        }
     }
 }
