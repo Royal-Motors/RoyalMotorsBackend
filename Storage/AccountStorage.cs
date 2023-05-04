@@ -51,6 +51,21 @@ namespace CarWebsiteBackend.Storage
             return Acc;
         }
 
+        public async Task PutForgotPasswordCode(string email, string code)
+        {
+            var sql = "UPDATE Accounts SET verificationCode = @Code WHERE email = @Email";
+            var parameters = new[]
+            {
+            new SqlParameter("@Code", code),
+            new SqlParameter("@Email", email)
+            };
+            var rowsAffected = await _context.Database.ExecuteSqlRawAsync(sql, parameters);
+            if (rowsAffected <= 0)
+            {
+                throw new ProfileNotFoundException();
+            }
+        }
+
         public async Task ReplaceAccount(Account account)
         {
             var sql = "UPDATE Accounts SET firstname = @NewFirstname, lastname = @NewLastname, password = @NewPassword WHERE email = @Email";
@@ -63,6 +78,23 @@ namespace CarWebsiteBackend.Storage
             };
             var rowsAffected = await _context.Database.ExecuteSqlRawAsync(sql, parameters);
             if(rowsAffected <= 0)
+            {
+                throw new ProfileNotFoundException();
+            }
+        }
+
+        public async Task ResetPassword(string email, string password, string code)
+        {
+            var sql = "UPDATE Accounts SET password = @NewPassword, verificationCode = @EmptyCode WHERE verificationCode = @Code AND email = @Email";
+            var parameters = new[]
+            {
+            new SqlParameter("@Code", code),
+            new SqlParameter("@Email", email),
+            new SqlParameter("@NewPassword", password),
+            new SqlParameter("@EmptyCode", "")
+            };
+            var rowsAffected = await _context.Database.ExecuteSqlRawAsync(sql, parameters);
+            if (rowsAffected <= 0)
             {
                 throw new ProfileNotFoundException();
             }
