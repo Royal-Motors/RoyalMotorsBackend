@@ -39,7 +39,7 @@ public class ImageController : ControllerBase
         }
     }
 
-    [HttpDelete("{id}")]
+    [HttpDelete]
     public async Task<ActionResult> DeleteImage(string carName, int order)
     {
         try
@@ -65,12 +65,16 @@ public class ImageController : ControllerBase
         }
     }
 
-
     [HttpPost]
     public async Task<IActionResult> PostImage(IFormFile File, string carName, int order)
     {
         try
         {
+            var type = File.ContentType;
+            if (type != "image/jpeg" && type != "image/png")
+            {
+                return BadRequest("Content type not supported, upload a 'jpeg' or 'png'");
+            }
             var car = await carInterface.GetCar(carName);
             string image_id_list = car.image_id_list;
             string[] imageArray = image_id_list.Split(',');
@@ -78,14 +82,13 @@ public class ImageController : ControllerBase
             string carNameEdited = $"{carNameNoSpace}_{order}";
             imageArray[order - 1] = carNameEdited;
             string edited_image_id_list = string.Join(",", imageArray);
-            var editedCar = new Car(car.name, car.make, car.model, car.year, car.color, car.used, car.price, car.description, car.mileage, car.horsepower, car.fuelconsumption, car.fueltankcapacity, car.transmissiontype, edited_image_id_list, car.video_id);
-            await carInterface.EditCar(editedCar);
-            var type = File.ContentType;
-            if (type != "image/jpeg" && type != "image/png")
-            {
-                return BadRequest("Content type not supported, upload a 'jpeg' or 'png'");
-            }
+
+            var editedCar = new Car(car.name, car.make, car.model, car.year, car.color, car.used, car.price, car.description,
+                car.mileage, car.horsepower, car.fuelconsumption, car.fueltankcapacity, car.transmissiontype,
+                edited_image_id_list, car.video_id);
+
             await imageInterface.UploadImage(carNameEdited, File);
+            await carInterface.EditCar(editedCar);
             return Ok("Image successfully uploaded.");
         }
         catch (Exception e)

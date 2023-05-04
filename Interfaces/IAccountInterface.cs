@@ -8,6 +8,7 @@ public interface IAccountInterface
     Task AddAccount(Account account); // used for Sign Up, returns error if account already exists
     Task <Account?> GetAccount(string email);
     Task DeleteAccount(string email);
-
+    Task PutForgotPasswordCode(string email, string code);
+    Task ResetPassword(string email, string password, string code);
     Task VerifyAccount(string email);
 }

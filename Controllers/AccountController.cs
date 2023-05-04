@@ -9,6 +9,7 @@ using System.Security.Claims;
 using System.Text;
 using Microsoft.AspNetCore.Authorization;
 using CarWebsiteBackend.Exceptions;
+using System.Collections.Generic;
 
 namespace CarWebsiteBackend.Controllers;
 
@@ -44,6 +45,10 @@ public class AccountController : ControllerBase
         if(!create_account.email.IsValidEmail())
         {
             return BadRequest("Invalid email format.");
+        }
+        if(!create_account.password.IsValidPassword())
+        {
+            return BadRequest("Invalid password: at least 8 characters, 1 number, and one special character.");
         }
         try
         {
@@ -149,6 +154,10 @@ public class AccountController : ControllerBase
         {
             return BadRequest("Invalid email format");
         }
+        if (!editedAcc.password.IsValidPassword())
+        {
+            return BadRequest("Invalid password: at least 8 characters, 1 number, and one special character.");
+        }
         string emailClaim = HttpContext.User.FindFirst(ClaimTypes.Email)?.Value;
         if(emailClaim != email)
         {
@@ -165,6 +174,48 @@ public class AccountController : ControllerBase
             if (e is ProfileNotFoundException)
             {
                 return NotFound($"Account with email {email} not found.");
+            }
+            throw;
+        }
+    }
+
+    [HttpGet("reset/{email}")]
+    public async Task<ActionResult> ResetPasswordEmail(string email)
+    {
+        try
+        {
+            string sixDigitCode = RandomCodeGenerator();
+            await accountInterface.PutForgotPasswordCode(email, sixDigitCode);
+            Email.Email.sendEmail(email, "Reset Password", HTMLContent.HTMLContent.resetPasswordEmail(sixDigitCode));
+            return Ok(sixDigitCode);
+        }
+        catch(Exception e)
+        {
+            if(e is ProfileNotFoundException)
+            {
+                return NotFound($"User with email {email} not found");
+            }
+            throw;
+        }
+    }
+
+    [HttpPost("reset")]
+    public async Task<ActionResult> ResetPassword(ResetPasswordRequest request)
+    {
+        try
+        {
+            if (!request.Password.IsValidPassword())
+            {
+                return BadRequest("Invalid password: at least 8 characters, 1 number, and one special character.");
+            }
+            await accountInterface.ResetPassword(request.Email, BCrypt.Net.BCrypt.HashPassword(request.Password), request.Code);
+            return Ok("Password has been successfully reset");
+        }
+        catch (Exception e)
+        {
+            if (e is ProfileNotFoundException)
+            {
+                return NotFound($"User with email {request.Email} not found");
             }
             throw;
         }
@@ -216,5 +267,13 @@ public class AccountController : ControllerBase
             }
             throw;
         }
+    }
+
+    private string RandomCodeGenerator()
+    {
+        Random random = new Random();
+        int randomNumber = random.Next(100000, 999999);
+        string sixDigitCode = randomNumber.ToString("D6");
+        return sixDigitCode;
     }
 }

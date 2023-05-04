@@ -328,5 +328,73 @@ namespace CarWebsiteBackend.HTMLContent
  </html>";
             return html;
         }
+        public static string resetPasswordEmail(string code)
+        {
+            string emailBody = @"
+            <html>
+                <head>
+                <title>Royal Motors - Reset Password</title>
+                <style>
+                    body {
+                        margin: 0;
+                        padding: 0;
+                        font-family: Arial, sans-serif;
+                        font-size: 16px;
+                        color: #444444;
+                        }
+                    .header {
+                        background-color: #1c2f36;
+                        color: #ffffff;
+                        padding: 20px;
+                        }
+                    .header h1 {
+                        margin: 0;
+                        font-size: 28px;
+                        }
+                    .button {
+                        display: inline-block;
+                        padding: 10px 20px;
+                        background-color: #1c2f36;
+                        color: #ffffff;
+                        text-decoration: none;
+                        border-radius: 5px;
+                        margin-top: 20px;
+                        margin-left: 3rem;
+                        }
+                    .button:hover {
+                        background-color: #95c197;
+                    }
+                    .footer {
+                        background-color: #1c2f36;
+                        padding: 20px;
+                        text-align: center;
+                        font-size: 14px;
+                        color: white;
+                        }
+
+
+                        .content p{
+                            margin-left: 3rem;
+                        }
+                </style>
+
+                </head>
+
+                <body>
+                    <div class='header'>
+                        <h1>Royal Motors</h1>
+                    </div>
+                    <div class='content'>
+                        <h2 style='background-color: #1c2f36; color: #ffffff; padding: 20px;'>Verify your email address</h2>
+                        <p>Use the code below to reset your password</p>
+                        <p>" + code + @"</p>
+                    </div>
+                        <div class='footer'>
+                        <p>This email was sent by Royal Motors, located at Clemenceau St. Hamra, Beirut.</p>
+                    </div>
+                </body>
+            </html>";
+            return emailBody;
+        }
     }
 }

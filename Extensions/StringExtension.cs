@@ -21,4 +21,19 @@ public static class StringExtension
             return false;
         }
     }
+
+    public static bool IsValidPassword(this string password)
+    {
+
+        try
+        {
+            return Regex.IsMatch(password,
+                @"^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$",
+                RegexOptions.None, TimeSpan.FromMilliseconds(250));
+        }
+        catch (RegexMatchTimeoutException)
+        {
+            return false;
+        }
+    }
 }
