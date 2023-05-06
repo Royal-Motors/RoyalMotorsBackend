@@ -14,6 +14,7 @@ namespace CarWebsiteBackend.Data
         public DbSet<Account> Accounts { get; set; }
         public DbSet<Car> Cars { get; set; }
         public DbSet<TestDrive> TestDrives { get; set; }
+        public DbSet<Sale> Sales { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
