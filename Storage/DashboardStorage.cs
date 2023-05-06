@@ -5,9 +5,22 @@ using CarWebsiteBackend.Interfaces;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
+using CarWebsiteBackend.Exceptions.TestDriveExceptions;
+using System;
+
 
 namespace CarWebsiteBackend.Storage
+
 {
+    public static class DateTimeExtensions
+    {
+        private static readonly DateTime UnixEpoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+
+        public static long ToUnixTimeSeconds(this DateTime dateTime)
+        {
+            return (long)(dateTime.ToUniversalTime() - UnixEpoch).TotalSeconds;
+        }
+    }
     public class DashboardStorage : IDashboardInterface
     {
         private readonly DataContext _context;
@@ -16,69 +29,105 @@ namespace CarWebsiteBackend.Storage
             _context = context;
         }
 
-        public Task<int> GetTotalCarsSold()
+        public async Task<int> GetTotalCarsSold()
         {
-            throw new NotImplementedException();
+            return await _context.Sales.CountAsync();
         }
 
-        public Task<int> GetTotalCarsSoldByDay(int unix_time)
+        public async Task<int> GetTotalCarsSoldByDay(int unix_time)
         {
-            throw new NotImplementedException();
+            var startOfDay = DateTimeOffset.FromUnixTimeSeconds(unix_time).Date;
+            var endOfDay = startOfDay.AddDays(1);
+            return await _context.Sales
+                .Where(s => s.Time >= startOfDay.ToUnixTimeSeconds() && s.Time < endOfDay.ToUnixTimeSeconds())
+                .CountAsync();
         }
 
-        public Task<int> GetTotalCarsSoldByMonth(int unix_time)
+        public async Task<int> GetTotalCarsSoldByMonth(int unix_time)
         {
-            throw new NotImplementedException();
+            var startOfMonth = DateTimeOffset.FromUnixTimeSeconds(unix_time).Date;
+            var endOfMonth = startOfMonth.AddMonths(1);
+            return await _context.Sales
+                .Where(s => s.Time >= startOfMonth.ToUnixTimeSeconds() && s.Time < endOfMonth.ToUnixTimeSeconds())
+                .CountAsync();
         }
 
-        public Task<int> GetTotalCarsSoldByYear(int unix_time)
+        public async Task<int> GetTotalCarsSoldByYear(int unix_time)
         {
-            throw new NotImplementedException();
+            var startOfYear = DateTimeOffset.FromUnixTimeSeconds(unix_time).Date;
+            var endOfYear = startOfYear.AddYears(1);
+            return await _context.Sales
+                .Where(s => s.Time >= startOfYear.ToUnixTimeSeconds() && s.Time < endOfYear.ToUnixTimeSeconds())
+                .CountAsync();
         }
 
-        public Task<int> GetTotalCustomers()
+        public async Task<int> GetTotalCustomers()
         {
-            throw new NotImplementedException();
+            return await _context.Sales.Select(s => s.Email).Distinct().CountAsync();
         }
 
-        public Task<int> GetTotalSales()
+        public async Task<int> GetTotalSales()
         {
-            throw new NotImplementedException();
+            return await _context.Sales.SumAsync(s => s.Price);
         }
 
-        public Task<int> GetTotalSalesByDay(int unix_time)
+        public async Task<int> GetTotalSalesByDay(int unix_time)
         {
-            throw new NotImplementedException();
+            var startOfDay = DateTimeOffset.FromUnixTimeSeconds(unix_time).Date;
+            var endOfDay = startOfDay.AddDays(1);
+            return await _context.Sales
+                .Where(s => s.Time >= startOfDay.ToUnixTimeSeconds() && s.Time < endOfDay.ToUnixTimeSeconds())
+                .SumAsync(s => s.Price);
         }
 
-        public Task<int> GetTotalSalesByMonth(int unix_time)
+        public async Task<int> GetTotalSalesByMonth(int unix_time)
         {
-            throw new NotImplementedException();
+            var startOfMonth = DateTimeOffset.FromUnixTimeSeconds(unix_time).Date;
+            var endOfMonth = startOfMonth.AddMonths(1);
+            return await _context.Sales
+                .Where(s => s.Time >= startOfMonth.ToUnixTimeSeconds() && s.Time < endOfMonth.ToUnixTimeSeconds())
+                .SumAsync(s => s.Price);
         }
 
-        public Task<int> GetTotalSalesByYear(int unix_time)
+        public async Task<int> GetTotalSalesByYear(int unix_time)
         {
-            throw new NotImplementedException();
+            var startOfYear = DateTimeOffset.FromUnixTimeSeconds(unix_time).Date;
+            var endOfYear = startOfYear.AddYears(1);
+            return await _context.Sales
+                .Where(s => s.Time >= startOfYear.ToUnixTimeSeconds() && s.Time < endOfYear.ToUnixTimeSeconds())
+                .SumAsync(s => s.Price);
         }
 
-        public Task<int> GetTotalTestDriveByDay(int unix_time)
+        public async Task<int> GetTotalTestDriveByDay(int unix_time)
         {
-            throw new NotImplementedException();
+            var startOfDay = DateTimeOffset.FromUnixTimeSeconds(unix_time).Date;
+            var endOfDay = startOfDay.AddDays(1);
+            return await _context.TestDrives
+                .Where(s => s.Time >= startOfDay.ToUnixTimeSeconds() && s.Time < endOfDay.ToUnixTimeSeconds())
+                .CountAsync();
         }
 
-        public Task<int> GetTotalTestDriveByMonth(int unix_time)
+        public async Task<int> GetTotalTestDriveByMonth(int unix_time)
         {
-            throw new NotImplementedException();
+            var startOfMonth = new DateTime(unix_time, 1, 1);
+            var endOfMonth = startOfMonth.AddMonths(1);
+            return await _context.TestDrives
+                .Where(s => s.Time >= startOfMonth.ToUnixTimeSeconds() && s.Time < endOfMonth.ToUnixTimeSeconds())
+                .CountAsync();
         }
 
-        public Task<int> GetTotalTestDriveByYear(int unix_time)
+        public async Task<int> GetTotalTestDriveByYear(int unix_time)
         {
-            throw new NotImplementedException();
+            var startOfYear = new DateTime(unix_time, 1, 1);
+            var endOfYear = startOfYear.AddYears(1);
+            return await _context.TestDrives
+                .Where(s => s.Time >= startOfYear.ToUnixTimeSeconds() && s.Time < endOfYear.ToUnixTimeSeconds())
+                .CountAsync();
         }
 
-        public Task<int> GetTotalTestDriveRequsted()
+        public async Task<int> GetTotalTestDriveRequsted()
         {
-            throw new NotImplementedException();
+            return await _context.TestDrives.CountAsync();
         }
     }
 }
