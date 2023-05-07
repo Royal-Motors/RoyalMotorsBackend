@@ -10,4 +10,6 @@ public interface IImageInterface
 
     Task UploadImage(string name, IFormFile file);
 
+    Task DeleteAllImages(string[] imageList);
+
 }

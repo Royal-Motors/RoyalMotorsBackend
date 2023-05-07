@@ -9,8 +9,6 @@ using System.Security.Claims;
 using System.Text;
 using Microsoft.AspNetCore.Authorization;
 using CarWebsiteBackend.Exceptions;
-using System.Collections.Generic;
-
 namespace CarWebsiteBackend.Controllers;
 
 [ApiController]
