@@ -18,16 +18,19 @@ namespace CarWebsiteBackend.Controllers;
 [Route("car")]
 public class CarController : ControllerBase
 {
-    private readonly CarInterface carInterface;
-    private readonly ITestDriveInterface testdriveInterface;
+    private readonly CarInterface carStore;
+    private readonly ITestDriveInterface testdriveStore;
     private readonly IAccountInterface accountStore;
+    private readonly IImageInterface imageStore;
 
 
-    public CarController(CarInterface carInterface, ITestDriveInterface testdriveInterface, IAccountInterface accountStore)
+    public CarController(CarInterface carInterface, ITestDriveInterface testdriveInterface,
+        IAccountInterface accountStore, IImageInterface imageStore)
     {
-        this.carInterface = carInterface;
-        this.testdriveInterface = testdriveInterface;
+        this.carStore = carInterface;
+        this.testdriveStore = testdriveInterface;
         this.accountStore = accountStore;
+        this.imageStore = imageStore;
     }
 
     [HttpPost]
@@ -36,7 +39,7 @@ public class CarController : ControllerBase
         try
         {
             var car = new Car(create_car.name, create_car.make, create_car.model, create_car.year, create_car.color, create_car.used, create_car.price, create_car.description, create_car.mileage, create_car.horsepower, create_car.fuelconsumption, create_car.fueltankcapacity, create_car.transmissiontype, create_car.image_id_list, create_car.video_id);
-            await carInterface.AddCar(car);
+            await carStore.AddCar(car);
             return CreatedAtAction(nameof(AddCar), new { name = car.name }, car);
         }
         catch (Exception e)
@@ -54,7 +57,7 @@ public class CarController : ControllerBase
     {
         try
         {
-            var car = await carInterface.GetCar(name);
+            var car = await carStore.GetCar(name);
             return Ok(car);
         }
         catch (Exception e)
@@ -72,7 +75,7 @@ public class CarController : ControllerBase
     {
         try
         {
-            var cars = await carInterface.GetAllCars();
+            var cars = await carStore.GetAllCars();
             return Ok(cars);
         }
         catch (Exception e)
@@ -91,7 +94,10 @@ public class CarController : ControllerBase
     {   
         try
         {
-            await carInterface.DeleteCar(name);
+            var imageIDs = await GetImageIDs(name);
+            await Task.WhenAll(carStore.DeleteCar(name),
+                                imageStore.DeleteAllImages(imageIDs)
+            );
             return Ok("Car successfully deleted");
         }
         
@@ -110,12 +116,15 @@ public class CarController : ControllerBase
     {
         try
         {
-            List<TestDrive> testDrivesList = await testdriveInterface.GetAllTestDriveByCarName(name);
+            List<TestDrive> testDrivesList = await testdriveStore.GetAllTestDriveByCarName(name);
+            var imageIDs = await GetImageIDs(name);
+            await Task.WhenAll(carStore.SellCar(name),
+                                imageStore.DeleteAllImages(imageIDs)
+            );
             foreach (TestDrive testDrive in testDrivesList)
             {
                 Email.Email.sendEmail(testDrive.Account.email, name + " Car Has Been Sold", HTMLContent.HTMLContent.CarSoldEmail(testDrive.Account.firstname + " " + testDrive.Account.lastname, name));
             }
-            await carInterface.SellCar(name);
             return Ok("Car successfully counted Sold");
         }
 
@@ -138,7 +147,7 @@ public class CarController : ControllerBase
             editedCar.mileage, editedCar.horsepower, editedCar.fuelconsumption, editedCar.fueltankcapacity, editedCar.transmissiontype, editedCar.image_id_list, editedCar.video_id);
 
             //await is related to async, wait it to sync.  
-            await carInterface.EditCar(new_car);
+            await carStore.EditCar(new_car);
             return CreatedAtAction(nameof(Edit), new { name = new_car.name }, new_car);
         }
         catch (Exception e)
@@ -149,5 +158,12 @@ public class CarController : ControllerBase
             }
             throw;
         }
+    }
+
+    private async Task<string[]> GetImageIDs(string name)
+    {
+        var car =  await carStore.GetCar(name);
+        return car.image_id_list.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+
     }
 }

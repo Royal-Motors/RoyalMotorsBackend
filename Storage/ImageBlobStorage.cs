@@ -89,4 +89,30 @@ public class ImageBlobStorage : IImageInterface
             throw;
         }
     }
+
+    public async Task DeleteAllImages(string[] imageList)
+    {
+        try
+        {
+            foreach (var image in imageList)
+            {
+                BlobClient blobClient = Container.GetBlobClient(image + ".png");
+                if (!await blobClient.ExistsAsync()) // if {id}.png doesn't exist
+                {
+                    blobClient = Container.GetBlobClient(image + ".jpeg");
+                    if (!await blobClient.ExistsAsync()) // if {id}.jpeg doesn't exist
+                    {
+                        throw new ImageNotFoundException();
+                    }
+
+                }
+                await blobClient.DeleteAsync();
+            }
+            return;
+        }
+        catch
+        {
+            throw;
+        }
+    }
 }
