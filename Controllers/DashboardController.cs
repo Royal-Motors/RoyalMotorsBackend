@@ -4,31 +4,48 @@ using CarWebsiteBackend.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 using CarWebsiteBackend.Exceptions.ProfileExceptions;
-using CarWebsiteBackend.Extensions;
-using Microsoft.AspNetCore.Authorization;
-using System.Security.Claims;
-using System.Collections.Generic;
-using System.Collections;
-using CarWebsiteBackend.Storage;
-
 namespace CarWebsiteBackend.Controllers
 {
     [ApiController]
     [Route("dashboard")]
     public class DashboardController : ControllerBase
     {
-        private readonly IDashboardInterface dashbaordInterface;
-        private readonly CarInterface carInterface;
+        private readonly ISaleStore saleStore;
+        private readonly CarInterface carStore;
         private readonly ITestDriveInterface testdriveInterface;
         private readonly IAccountInterface accountStore;
 
 
-        public DashboardController(IDashboardInterface dashbaordInterface, CarInterface carInterface, ITestDriveInterface testdriveInterface, IAccountInterface accountStore)
+        public DashboardController(ISaleStore saleStore, CarInterface carStore, ITestDriveInterface testdriveInterface, IAccountInterface accountStore)
         {
-            this.dashbaordInterface = dashbaordInterface;
-            this.carInterface = carInterface;
+            this.saleStore = saleStore;
+            this.carStore = carStore;
             this.testdriveInterface = testdriveInterface;
             this.accountStore = accountStore;
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> AddSale(Sale sale)
+        {
+            try
+            {
+                await accountStore.GetAccount(sale.Email);
+                await carStore.GetCar(sale.CarName);
+                await saleStore.AddSale(sale);
+                return CreatedAtAction(nameof(AddSale), new { }, sale);
+            }
+            catch (Exception ex)
+            {
+                if(ex is ProfileNotFoundException)
+                {
+                    return NotFound($"Account with email {sale.Email} not found");
+                }
+                else if(ex is CarNotFoundException)
+                {
+                    return NotFound($"Car {sale.CarName} not found");
+                }
+                throw;
+            }
         }
 
         [HttpGet("sales/day/{unixTime}")]
@@ -36,7 +53,7 @@ namespace CarWebsiteBackend.Controllers
         {
             try
             {
-                int totalSalesByDay = await dashbaordInterface.GetTotalSalesByDay(unixTime);
+                int totalSalesByDay = await saleStore.GetTotalSalesByDay(unixTime);
                 return Ok(totalSalesByDay);
             }
             catch (Exception ex)
@@ -50,7 +67,7 @@ namespace CarWebsiteBackend.Controllers
         {
             try
             {
-                int totalSalesByMonth = await dashbaordInterface.GetTotalSalesByMonth(unixTime);
+                int totalSalesByMonth = await saleStore.GetTotalSalesByMonth(unixTime);
                 return Ok(totalSalesByMonth);
             }
             catch (Exception ex)
@@ -64,7 +81,7 @@ namespace CarWebsiteBackend.Controllers
         {
             try
             {
-                int totalSalesByYear = await dashbaordInterface.GetTotalSalesByYear(unixTime);
+                int totalSalesByYear = await saleStore.GetTotalSalesByYear(unixTime);
                 return Ok(totalSalesByYear);
             }
             catch (Exception ex)
@@ -78,7 +95,7 @@ namespace CarWebsiteBackend.Controllers
         {
             try
             {
-                int totalCarsSoldByDay = await dashbaordInterface.GetTotalCarsSoldByDay(unixTime);
+                int totalCarsSoldByDay = await saleStore.GetTotalCarsSoldByDay(unixTime);
                 return Ok(totalCarsSoldByDay);
             }
             catch (Exception ex)
@@ -92,7 +109,7 @@ namespace CarWebsiteBackend.Controllers
         {
             try
             {
-                int totalCarsSoldByMonth = await dashbaordInterface.GetTotalCarsSoldByMonth(unixTime);
+                int totalCarsSoldByMonth = await saleStore.GetTotalCarsSoldByMonth(unixTime);
                 return Ok(totalCarsSoldByMonth);
             }
             catch (Exception ex)
@@ -106,7 +123,7 @@ namespace CarWebsiteBackend.Controllers
         {
             try
             {
-                int totalCarsSoldByYear = await dashbaordInterface.GetTotalCarsSoldByYear(unixTime);
+                int totalCarsSoldByYear = await saleStore.GetTotalCarsSoldByYear(unixTime);
                 return Ok(totalCarsSoldByYear);
             }
             catch (Exception ex)
@@ -120,7 +137,7 @@ namespace CarWebsiteBackend.Controllers
         {
             try
             {
-                int totalTestDrivesByDay = await dashbaordInterface.GetTotalTestDriveByDay(unixTime);
+                int totalTestDrivesByDay = await saleStore.GetTotalTestDriveByDay(unixTime);
                 return Ok(totalTestDrivesByDay);
             }
             catch (Exception ex)
@@ -134,7 +151,7 @@ namespace CarWebsiteBackend.Controllers
         {
             try
             {
-                int totalTestDrivesByMonth = await dashbaordInterface.GetTotalTestDriveByMonth(unixTime);
+                int totalTestDrivesByMonth = await saleStore.GetTotalTestDriveByMonth(unixTime);
                 return Ok(totalTestDrivesByMonth);
             }
             catch (Exception ex)
@@ -148,7 +165,7 @@ namespace CarWebsiteBackend.Controllers
         {
             try
             {
-                int totalTestDrivesByYear = await dashbaordInterface.GetTotalTestDriveByYear(unixTime);
+                int totalTestDrivesByYear = await saleStore.GetTotalTestDriveByYear(unixTime);
                 return Ok(totalTestDrivesByYear);
             }
             catch (Exception ex)
@@ -162,7 +179,7 @@ namespace CarWebsiteBackend.Controllers
         {
             try
             {
-                int totalSales = await dashbaordInterface.GetTotalSales();
+                int totalSales = await saleStore.GetTotalSales();
                 return Ok(totalSales);
             }
             catch (Exception ex)
@@ -176,7 +193,7 @@ namespace CarWebsiteBackend.Controllers
         {
             try
             {
-                int totalCarsSold = await dashbaordInterface.GetTotalCarsSold();
+                int totalCarsSold = await saleStore.GetTotalCarsSold();
                 return Ok(totalCarsSold);
             }
             catch (Exception ex)
@@ -190,7 +207,7 @@ namespace CarWebsiteBackend.Controllers
         {
             try
             {
-                int totalTestDriveRequested = await dashbaordInterface.GetTotalTestDriveRequsted();
+                int totalTestDriveRequested = await saleStore.GetTotalTestDriveRequsted();
                 return Ok(totalTestDriveRequested);
             }
             catch (Exception ex)
@@ -204,7 +221,7 @@ namespace CarWebsiteBackend.Controllers
         {
             try
             {
-                int totalCustomers = await dashbaordInterface.GetTotalCustomers();
+                int totalCustomers = await saleStore.GetTotalCustomers();
                 return Ok(totalCustomers);
             }
             catch (Exception ex)

@@ -20,6 +20,8 @@ builder.Services.AddDbContext<DataContext>(options => options.UseSqlServer(build
 builder.Services.AddScoped<IAccountInterface, AccountStorage>();
 builder.Services.AddScoped<CarInterface, CarStorage>();
 builder.Services.AddScoped<ITestDriveInterface, TestDriveStorage>();
+builder.Services.AddScoped<ISaleStore, SaleStorage>();
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(option =>

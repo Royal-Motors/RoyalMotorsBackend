@@ -1,9 +1,10 @@
 ﻿using CarWebsiteBackend.DTOs;
-using Microsoft.AspNetCore.Mvc;
 namespace CarWebsiteBackend.Interfaces;
 
-public interface IDashboardInterface
+public interface ISaleStore
 {
+    Task AddSale(Sale sale);
+
     Task<int> GetTotalSalesByDay(int unix_time);
     Task<int> GetTotalSalesByMonth(int unix_time);
     Task<int> GetTotalSalesByYear(int unix_time);
@@ -19,6 +20,5 @@ public interface IDashboardInterface
     Task<int> GetTotalSales();
     Task<int> GetTotalCarsSold();
     Task<int> GetTotalTestDriveRequsted();
-    Task<int> GetTotalCustomers();
-    
+    Task<int> GetTotalCustomers();   
 }
