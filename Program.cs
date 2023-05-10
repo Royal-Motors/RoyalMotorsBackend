@@ -66,6 +66,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
         ValidateIssuer = true,
         ValidateAudience = true,
         ValidateLifetime = true,
+        ClockSkew = TimeSpan.Zero,
         ValidateIssuerSigningKey = true,
         ValidAudience = "http://localhost:7284",
         ValidIssuer = "http://localhost:7284",
