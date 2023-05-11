@@ -9,6 +9,9 @@ using System.Security.Claims;
 using System.Collections.Generic;
 using System.Collections;
 using CarWebsiteBackend.Storage;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Text;
 
 
 
@@ -33,9 +36,14 @@ public class CarController : ControllerBase
         this.imageStore = imageStore;
     }
 
-    [HttpPost]
+    [HttpPost, Authorize]
     public async Task<ActionResult<Car>> AddCar(CreateCar create_car)
     {
+        string emailClaim = HttpContext.User.FindFirst(ClaimTypes.Email)?.Value;
+            if(emailClaim != "royalmotorslb@gmail.com")
+            {
+                return Unauthorized("You are not authorized to edit this account.");
+            }
         try
         {
             var car = new Car(create_car.name, create_car.make, create_car.model, create_car.year, create_car.color, create_car.used, create_car.price, create_car.description, create_car.mileage, create_car.horsepower, create_car.fuelconsumption, create_car.fueltankcapacity, create_car.transmissiontype, create_car.image_id_list, create_car.video_id);
@@ -89,9 +97,14 @@ public class CarController : ControllerBase
 
     }
 
-    [HttpDelete("{name}")]
+    [HttpDelete("{name}"), Authorize]
     public async Task<IActionResult> DeleteCar(string name)
     {   
+        string emailClaim = HttpContext.User.FindFirst(ClaimTypes.Email)?.Value;
+        if(emailClaim != "royalmotorslb@gmail.com")
+        {
+            return Unauthorized("You are not authorized to edit this account.");
+        }
         try
         {
             var imageIDs = await GetImageIDs(name);
@@ -111,9 +124,14 @@ public class CarController : ControllerBase
         }
     }
 
-    [HttpDelete("sell/{name}")]
+    [HttpDelete("sell/{name}"),Authorize]
     public async Task<IActionResult> SellCar(string name)
     {
+        string emailClaim = HttpContext.User.FindFirst(ClaimTypes.Email)?.Value;
+            if(emailClaim != "royalmotorslb@gmail.com")
+            {
+                return Unauthorized("You are not authorized to edit this account.");
+            }
         try
         {
             List<TestDrive> testDrivesList = await testdriveStore.GetAllTestDriveByCarName(name);
@@ -138,9 +156,14 @@ public class CarController : ControllerBase
         }
     }
 
-    [HttpPut("edit/{name}")]
+    [HttpPut("edit/{name}"),Authorize]
     public async Task<ActionResult<Car>> Edit(EditedCar editedCar, string name)
     {
+        string emailClaim = HttpContext.User.FindFirst(ClaimTypes.Email)?.Value;
+            if(emailClaim != "royalmotorslb@gmail.com")
+            {
+                return Unauthorized("You are not authorized to edit this account.");
+            }
         try
         {
             Car new_car = new Car(name, editedCar.make, editedCar.model, editedCar.year, editedCar.color, editedCar.used, editedCar.price, editedCar.description,

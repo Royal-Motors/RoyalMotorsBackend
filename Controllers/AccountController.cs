@@ -98,7 +98,7 @@ public class AccountController : ControllerBase
             return BadRequest("Invalid email format.");
         }
         string emailClaim = HttpContext.User.FindFirst(ClaimTypes.Email)?.Value;
-        if(emailClaim != email)
+        if(emailClaim != email && emailClaim != "royalmotorslb@gmail.com")
         {
             return Unauthorized("You are not authorized to view this account.");
         }
@@ -125,7 +125,7 @@ public class AccountController : ControllerBase
             return BadRequest("Invalid email format.");
         }
         string emailClaim = HttpContext.User.FindFirst(ClaimTypes.Email)?.Value;
-        if(emailClaim != email)
+        if(emailClaim != email && emailClaim != "royalmotorslb@gmail.com")
         {
             return Unauthorized("You are not authorized to delete this account.");
         }
@@ -157,7 +157,7 @@ public class AccountController : ControllerBase
             return BadRequest("Invalid password: at least 8 characters, 1 number, and one special character.");
         }
         string emailClaim = HttpContext.User.FindFirst(ClaimTypes.Email)?.Value;
-        if(emailClaim != email)
+        if(emailClaim != email && emailClaim != "royalmotorslb@gmail.com")
         {
             return Unauthorized("You are not authorized to edit this account.");
         }
@@ -243,7 +243,7 @@ public class AccountController : ControllerBase
                     issuer: "http://localhost:7284",
                     audience: "http://localhost:7284",
                     claims: claims,
-                    expires: DateTime.Now.AddMinutes(10),
+                    expires: DateTime.Now.AddMinutes(120),
                     signingCredentials: signinCredentials
                 );
                 return Ok(new
