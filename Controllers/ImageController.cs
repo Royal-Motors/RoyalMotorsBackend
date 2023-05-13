@@ -3,6 +3,11 @@ using Microsoft.AspNetCore.Mvc;
 using CarWebsiteBackend.Exceptions;
 using CarWebsiteBackend.DTOs;
 using CarWebsiteBackend.Exceptions.CarExceptions;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
+using Microsoft.AspNetCore.Authorization;
+using CarWebsiteBackend.Exceptions;
 
 namespace CarWebsiteBackend.Controllers;
 
@@ -39,9 +44,14 @@ public class ImageController : ControllerBase
         }
     }
 
-    [HttpDelete]
+    [HttpDelete, Authorize]
     public async Task<ActionResult> DeleteImage(string carName, int order)
     {
+        string emailClaim = HttpContext.User.FindFirst(ClaimTypes.Email)?.Value;
+            if(emailClaim != "royalmotorslb@gmail.com")
+            {
+                return Unauthorized("You are not authorized to edit this account.");
+            }
         try
         {
             var car = await carInterface.GetCar(carName);
@@ -65,9 +75,14 @@ public class ImageController : ControllerBase
         }
     }
 
-    [HttpPost]
+    [HttpPost, Authorize]
     public async Task<IActionResult> PostImage(IFormFile File, string carName, int order)
     {
+        string emailClaim = HttpContext.User.FindFirst(ClaimTypes.Email)?.Value;
+            if(emailClaim != "royalmotorslb@gmail.com")
+            {
+                return Unauthorized("You are not authorized to edit this account.");
+            }
         try
         {
             var type = File.ContentType;
