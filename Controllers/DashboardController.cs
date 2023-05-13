@@ -2,6 +2,11 @@
 using CarWebsiteBackend.Exceptions.CarExceptions;
 using CarWebsiteBackend.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
+using Microsoft.AspNetCore.Authorization;
+using CarWebsiteBackend.Exceptions;
 
 using CarWebsiteBackend.Exceptions.ProfileExceptions;
 namespace CarWebsiteBackend.Controllers
@@ -24,9 +29,14 @@ namespace CarWebsiteBackend.Controllers
             this.accountStore = accountStore;
         }
 
-        [HttpPost]
+        [HttpPost, Authorize]
         public async Task<ActionResult> AddSale(Sale sale)
         {
+            string emailClaim = HttpContext.User.FindFirst(ClaimTypes.Email)?.Value;
+            if(emailClaim != "royalmotorslb@gmail.com")
+            {
+                return Unauthorized("You are not authorized to edit this account.");
+            }
             try
             {
                 await accountStore.GetAccount(sale.Email);
@@ -48,9 +58,14 @@ namespace CarWebsiteBackend.Controllers
             }
         }
 
-        [HttpGet("sales/day/{unixTime}")]
+        [HttpGet("sales/day/{unixTime}"), Authorize]
         public async Task<ActionResult<int>> GetTotalSalesByDay(int unixTime)
         {
+            string emailClaim = HttpContext.User.FindFirst(ClaimTypes.Email)?.Value;
+            if(emailClaim != "royalmotorslb@gmail.com")
+            {
+                return Unauthorized("You are not authorized to edit this account.");
+            }
             try
             {
                 int totalSalesByDay = await saleStore.GetTotalSalesByDay(unixTime);
@@ -62,9 +77,14 @@ namespace CarWebsiteBackend.Controllers
             }
         }
 
-        [HttpGet("sales/month/{unixTime}")]
+        [HttpGet("sales/month/{unixTime}"), Authorize]
         public async Task<ActionResult<int>> GetTotalSalesByMonth(int unixTime)
         {
+            string emailClaim = HttpContext.User.FindFirst(ClaimTypes.Email)?.Value;
+            if(emailClaim != "royalmotorslb@gmail.com")
+            {
+                return Unauthorized("You are not authorized to edit this account.");
+            }
             try
             {
                 int totalSalesByMonth = await saleStore.GetTotalSalesByMonth(unixTime);
@@ -76,9 +96,14 @@ namespace CarWebsiteBackend.Controllers
             }
         }
 
-        [HttpGet("sales/year/{unixTime}")]
+        [HttpGet("sales/year/{unixTime}"), Authorize]
         public async Task<ActionResult<int>> GetTotalSalesByYear(int unixTime)
         {
+            string emailClaim = HttpContext.User.FindFirst(ClaimTypes.Email)?.Value;
+            if(emailClaim != "royalmotorslb@gmail.com")
+            {
+                return Unauthorized("You are not authorized to edit this account.");
+            }
             try
             {
                 int totalSalesByYear = await saleStore.GetTotalSalesByYear(unixTime);
@@ -90,9 +115,14 @@ namespace CarWebsiteBackend.Controllers
             }
         }
 
-        [HttpGet("cars/day/{unixTime}")]
+        [HttpGet("cars/day/{unixTime}"), Authorize]
         public async Task<ActionResult<int>> GetTotalCarsSoldByDay(int unixTime)
         {
+            string emailClaim = HttpContext.User.FindFirst(ClaimTypes.Email)?.Value;
+            if(emailClaim != "royalmotorslb@gmail.com")
+            {
+                return Unauthorized("You are not authorized to edit this account.");
+            }
             try
             {
                 int totalCarsSoldByDay = await saleStore.GetTotalCarsSoldByDay(unixTime);
@@ -104,9 +134,14 @@ namespace CarWebsiteBackend.Controllers
             }
         }
 
-        [HttpGet("cars/month/{unixTime}")]
+        [HttpGet("cars/month/{unixTime}"), Authorize]
         public async Task<ActionResult<int>> GetTotalCarsSoldByMonth(int unixTime)
         {
+            string emailClaim = HttpContext.User.FindFirst(ClaimTypes.Email)?.Value;
+            if(emailClaim != "royalmotorslb@gmail.com")
+            {
+                return Unauthorized("You are not authorized to edit this account.");
+            }
             try
             {
                 int totalCarsSoldByMonth = await saleStore.GetTotalCarsSoldByMonth(unixTime);
@@ -118,9 +153,14 @@ namespace CarWebsiteBackend.Controllers
             }
         }
 
-        [HttpGet("cars/year/{unixTime}")]
+        [HttpGet("cars/year/{unixTime}"), Authorize]
         public async Task<ActionResult<int>> GetTotalCarsSoldByYear(int unixTime)
         {
+            string emailClaim = HttpContext.User.FindFirst(ClaimTypes.Email)?.Value;
+            if(emailClaim != "royalmotorslb@gmail.com")
+            {
+                return Unauthorized("You are not authorized to edit this account.");
+            }
             try
             {
                 int totalCarsSoldByYear = await saleStore.GetTotalCarsSoldByYear(unixTime);
@@ -132,9 +172,14 @@ namespace CarWebsiteBackend.Controllers
             }
         }
 
-        [HttpGet("testdrive/day/{unixTime}")]
+        [HttpGet("testdrive/day/{unixTime}"), Authorize]
         public async Task<ActionResult<int>> GetTotalTestDriveByDay(int unixTime)
         {
+            string emailClaim = HttpContext.User.FindFirst(ClaimTypes.Email)?.Value;
+            if(emailClaim != "royalmotorslb@gmail.com")
+            {
+                return Unauthorized("You are not authorized to edit this account.");
+            }
             try
             {
                 int totalTestDrivesByDay = await saleStore.GetTotalTestDriveByDay(unixTime);
@@ -146,9 +191,14 @@ namespace CarWebsiteBackend.Controllers
             }
         }
 
-        [HttpGet("testdrive/month/{unixTime}")]
+        [HttpGet("testdrive/month/{unixTime}"), Authorize]
         public async Task<ActionResult<int>> GetTotalTestDriveByMonth(int unixTime)
         {
+            string emailClaim = HttpContext.User.FindFirst(ClaimTypes.Email)?.Value;
+            if(emailClaim != "royalmotorslb@gmail.com")
+            {
+                return Unauthorized("You are not authorized to edit this account.");
+            }
             try
             {
                 int totalTestDrivesByMonth = await saleStore.GetTotalTestDriveByMonth(unixTime);
@@ -160,9 +210,14 @@ namespace CarWebsiteBackend.Controllers
             }
         }
 
-        [HttpGet("testdrive/year/{unixTime}")]
+        [HttpGet("testdrive/year/{unixTime}"), Authorize]
         public async Task<ActionResult<int>> GetTotalTestDriveByYear(int unixTime)
         {
+            string emailClaim = HttpContext.User.FindFirst(ClaimTypes.Email)?.Value;
+            if(emailClaim != "royalmotorslb@gmail.com")
+            {
+                return Unauthorized("You are not authorized to edit this account.");
+            }
             try
             {
                 int totalTestDrivesByYear = await saleStore.GetTotalTestDriveByYear(unixTime);
@@ -174,9 +229,14 @@ namespace CarWebsiteBackend.Controllers
             }
         }
 
-        [HttpGet("totalsales")]
+        [HttpGet("totalsales"), Authorize]
         public async Task<IActionResult> GetTotalSales()
         {
+            string emailClaim = HttpContext.User.FindFirst(ClaimTypes.Email)?.Value;
+            if(emailClaim != "royalmotorslb@gmail.com")
+            {
+                return Unauthorized("You are not authorized to edit this account.");
+            }
             try
             {
                 int totalSales = await saleStore.GetTotalSales();
@@ -188,9 +248,14 @@ namespace CarWebsiteBackend.Controllers
             }
         }
 
-        [HttpGet("totalcarssold")]
+        [HttpGet("totalcarssold"), Authorize]
         public async Task<IActionResult> GetTotalCarsSold()
         {
+            string emailClaim = HttpContext.User.FindFirst(ClaimTypes.Email)?.Value;
+            if(emailClaim != "royalmotorslb@gmail.com")
+            {
+                return Unauthorized("You are not authorized to edit this account.");
+            }
             try
             {
                 int totalCarsSold = await saleStore.GetTotalCarsSold();
@@ -202,9 +267,14 @@ namespace CarWebsiteBackend.Controllers
             }
         }
 
-        [HttpGet("totaltestdriverequested")]
+        [HttpGet("totaltestdriverequested"), Authorize]
         public async Task<IActionResult> GetTotalTestDriveRequsted()
         {
+            string emailClaim = HttpContext.User.FindFirst(ClaimTypes.Email)?.Value;
+            if(emailClaim != "royalmotorslb@gmail.com")
+            {
+                return Unauthorized("You are not authorized to edit this account.");
+            }
             try
             {
                 int totalTestDriveRequested = await saleStore.GetTotalTestDriveRequsted();
@@ -216,9 +286,14 @@ namespace CarWebsiteBackend.Controllers
             }
         }
 
-        [HttpGet("totalcustomers")]
+        [HttpGet("totalcustomers"), Authorize]
         public async Task<IActionResult> GetTotalCustomers()
         {
+            string emailClaim = HttpContext.User.FindFirst(ClaimTypes.Email)?.Value;
+            if(emailClaim != "royalmotorslb@gmail.com")
+            {
+                return Unauthorized("You are not authorized to edit this account.");
+            }
             try
             {
                 int totalCustomers = await saleStore.GetTotalCustomers();
