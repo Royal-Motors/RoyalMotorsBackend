@@ -1,7 +1,6 @@
 ﻿using CarWebsiteBackend.Data;
 using CarWebsiteBackend.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using CarWebsiteBackend.Extensions;
 using CarWebsiteBackend.DTOs;
 
 namespace CarWebsiteBackend.Storage;
@@ -27,28 +26,28 @@ public class SaleStorage : ISaleStore
 
     public async Task<int> GetTotalCarsSoldByDay(int unix_time)
     {
-        var startOfDay = DateTimeOffset.FromUnixTimeSeconds(unix_time).Date;
-        var endOfDay = startOfDay.AddDays(1);
+        var startOfDay = unix_time;
+        var endOfDay = unix_time + 86400;
         return await _context.Sales
-            .Where(s => s.Time >= startOfDay.ToUnixTimeSeconds() && s.Time < endOfDay.ToUnixTimeSeconds())
+            .Where(s => s.Time >= startOfDay && s.Time < endOfDay)
             .CountAsync();
     }
 
     public async Task<int> GetTotalCarsSoldByMonth(int unix_time)
     {
-        var startOfMonth = DateTimeOffset.FromUnixTimeSeconds(unix_time).Date;
-        var endOfMonth = startOfMonth.AddMonths(1);
+        var startOfMonth = unix_time;
+        var endOfMonth = unix_time + 2.628e+6;
         return await _context.Sales
-            .Where(s => s.Time >= startOfMonth.ToUnixTimeSeconds() && s.Time < endOfMonth.ToUnixTimeSeconds())
+            .Where(s => s.Time >= startOfMonth && s.Time < endOfMonth)
             .CountAsync();
     }
 
     public async Task<int> GetTotalCarsSoldByYear(int unix_time)
     {
-        var startOfYear = DateTimeOffset.FromUnixTimeSeconds(unix_time).Date;
-        var endOfYear = startOfYear.AddYears(1);
+        var startOfYear = unix_time;
+        var endOfYear = unix_time + 3.154e+7;
         return await _context.Sales
-            .Where(s => s.Time >= startOfYear.ToUnixTimeSeconds() && s.Time < endOfYear.ToUnixTimeSeconds())
+            .Where(s => s.Time >= startOfYear && s.Time < endOfYear)
             .CountAsync();
     }
 
@@ -64,58 +63,55 @@ public class SaleStorage : ISaleStore
 
     public async Task<int> GetTotalSalesByDay(int unix_time)
     {
-        var startOfDay = DateTimeOffset.FromUnixTimeSeconds(unix_time).Date;
-        var endOfDay = startOfDay.AddDays(1);
-        var time1 = startOfDay.ToUnixTimeSeconds();
-        var time2 = endOfDay.ToUnixTimeSeconds();
-
+        var startOfDay = unix_time;
+        var endOfDay = unix_time + 86400;
         return await _context.Sales
-            .Where(s => s.Time >= time1 && s.Time < time2)
+            .Where(s => s.Time >= startOfDay && s.Time < endOfDay)
             .SumAsync(s => s.Price);
     }
 
     public async Task<int> GetTotalSalesByMonth(int unix_time)
     {
-        var startOfMonth = DateTimeOffset.FromUnixTimeSeconds(unix_time).Date;
-        var endOfMonth = startOfMonth.AddMonths(1);
+        var startOfMonth = unix_time;
+        var endOfMonth = unix_time + 2.628e+6;
         return await _context.Sales
-            .Where(s => s.Time >= startOfMonth.ToUnixTimeSeconds() && s.Time < endOfMonth.ToUnixTimeSeconds())
+            .Where(s => s.Time >= startOfMonth && s.Time < endOfMonth)
             .SumAsync(s => s.Price);
     }
 
     public async Task<int> GetTotalSalesByYear(int unix_time)
     {
-        var startOfYear = DateTimeOffset.FromUnixTimeSeconds(unix_time).Date;
-        var endOfYear = startOfYear.AddYears(1);
+        var startOfYear = unix_time;
+        var endOfYear = unix_time + 3.154e+7;
         return await _context.Sales
-            .Where(s => s.Time >= startOfYear.ToUnixTimeSeconds() && s.Time < endOfYear.ToUnixTimeSeconds())
+            .Where(s => s.Time >= startOfYear && s.Time < endOfYear)
             .SumAsync(s => s.Price);
     }
 
     public async Task<int> GetTotalTestDriveByDay(int unix_time)
     {
-        var startOfDay = DateTimeOffset.FromUnixTimeSeconds(unix_time).Date;
-        var endOfDay = startOfDay.AddDays(1);
+        var startOfDay = unix_time;
+        var endOfDay = unix_time + 86400;
         return await _context.TestDrives
-            .Where(s => s.Time >= startOfDay.ToUnixTimeSeconds() && s.Time < endOfDay.ToUnixTimeSeconds())
+            .Where(s => s.Time >= startOfDay && s.Time < endOfDay)
             .CountAsync();
     }
 
     public async Task<int> GetTotalTestDriveByMonth(int unix_time)
     {
-        var startOfMonth = new DateTime(unix_time, 1, 1);
-        var endOfMonth = startOfMonth.AddMonths(1);
+        var startOfMonth = unix_time;
+        var endOfMonth = unix_time + 2.628e+6;
         return await _context.TestDrives
-            .Where(s => s.Time >= startOfMonth.ToUnixTimeSeconds() && s.Time < endOfMonth.ToUnixTimeSeconds())
+            .Where(s => s.Time >= startOfMonth && s.Time < endOfMonth)
             .CountAsync();
     }
 
     public async Task<int> GetTotalTestDriveByYear(int unix_time)
     {
-        var startOfYear = new DateTime(unix_time, 1, 1);
-        var endOfYear = startOfYear.AddYears(1);
+        var startOfYear = unix_time;
+        var endOfYear = unix_time + 3.154e+7;
         return await _context.TestDrives
-            .Where(s => s.Time >= startOfYear.ToUnixTimeSeconds() && s.Time < endOfYear.ToUnixTimeSeconds())
+            .Where(s => s.Time >= startOfYear && s.Time < endOfYear)
             .CountAsync();
     }
 
