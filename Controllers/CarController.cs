@@ -42,7 +42,7 @@ public class CarController : ControllerBase
         string emailClaim = HttpContext.User.FindFirst(ClaimTypes.Email)?.Value;
             if(emailClaim != "royalmotorslb@gmail.com")
             {
-                return Unauthorized("You are not authorized to edit this account.");
+                return Unauthorized("You are not authorized!");
             }
         try
         {
@@ -103,7 +103,7 @@ public class CarController : ControllerBase
         string emailClaim = HttpContext.User.FindFirst(ClaimTypes.Email)?.Value;
         if(emailClaim != "royalmotorslb@gmail.com")
         {
-            return Unauthorized("You are not authorized to edit this account.");
+            return Unauthorized("You are not authorized!");
         }
         try
         {
@@ -130,7 +130,7 @@ public class CarController : ControllerBase
         string emailClaim = HttpContext.User.FindFirst(ClaimTypes.Email)?.Value;
             if(emailClaim != "royalmotorslb@gmail.com")
             {
-                return Unauthorized("You are not authorized to edit this account.");
+                return Unauthorized("You are not authorized!");
             }
         try
         {
@@ -162,7 +162,7 @@ public class CarController : ControllerBase
         string emailClaim = HttpContext.User.FindFirst(ClaimTypes.Email)?.Value;
             if(emailClaim != "royalmotorslb@gmail.com")
             {
-                return Unauthorized("You are not authorized to edit this account.");
+                return Unauthorized("You are not authorized!");
             }
         try
         {
