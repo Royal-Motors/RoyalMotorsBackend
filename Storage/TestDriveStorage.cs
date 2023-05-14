@@ -128,5 +128,18 @@ namespace CarWebsiteBackend.Storage
             }
             return testDrives;
         }
+
+        public async Task<string> GetAccount(int Id)
+        {
+            var testDrive = await _context.TestDrives.Where(p => p.Id == Id)
+                .Include(td => td.Car)
+                .Include(td => td.Account)
+                .FirstOrDefaultAsync();
+            if (testDrive == null)
+            {
+                throw new TestDriveNotFoundException();
+            }
+            return testDrive.Account.email;
+        }
     }
 }
