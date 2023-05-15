@@ -39,7 +39,11 @@ public class TestDriveController : ControllerBase
         {
             var account = await accountStore.GetAccount(request.AccountEmail);
             var car = await carStore.GetCar(request.CarName);
-
+            var slots = await testdriveInterface.GetAllAvailableSlots(request.CarName);
+            if (!slots.Contains(request.Time)) 
+            {
+                return Conflict("Time slot is unavailable.");
+            }
             TestDrive testDrive = new(request, car, account);
             await testdriveInterface.AddTestDrive(testDrive);
 
@@ -184,4 +188,24 @@ public class TestDriveController : ControllerBase
             throw;
         }
     }
+
+    [HttpGet("slots/{Car_Name}")]
+    public async Task<ActionResult<List<long>>> GetAllTestDriveTimesByCarName(string Car_Name)
+    {
+        try
+        {
+            var slots = await testdriveInterface.GetAllAvailableSlots(Car_Name);
+            return Ok(slots);
+        }
+        catch (Exception e)
+        {
+            if (e is CarNotFoundException)
+            {
+                return NotFound($"Car with name {Car_Name} was not found.");
+            }
+            throw;
+        }
+
+    }
 }
+

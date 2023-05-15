@@ -1,4 +1,4 @@
-﻿using CarWebsiteBackend.DTOs;
+using CarWebsiteBackend.DTOs;
 using Microsoft.AspNetCore.Mvc;
 namespace CarWebsiteBackend.Interfaces;
 
@@ -10,5 +10,6 @@ public interface ITestDriveInterface
     Task<List<TestDrive>> GetAllTestDriveByCarName(string CarName);
     Task<List<TestDrive>> GetAllTestDriveByAccountEmail(string Email);
     Task<List<TestDrive>> GetAllTestDrives();
+    Task<List<long>> GetAllAvailableSlots(string CarName);
     Task<string> GetAccount(int Id);
 }
