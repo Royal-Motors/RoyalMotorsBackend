@@ -32,10 +32,10 @@ public class TestDriveController : ControllerBase
     public async Task<ActionResult<TestDrive>> AddTestDrive(TestDriveRequest request)
     {
         string emailClaim = HttpContext.User.FindFirst(ClaimTypes.Email)?.Value;
-            if(emailClaim != request.AccountEmail && emailClaim != "royalmotorslb@gmail.com")
-            {
-                return Unauthorized("You are not authorized!");
-            }
+        if (emailClaim != request.AccountEmail && emailClaim != "royalmotorslb@gmail.com")
+        {
+            return Unauthorized("You are not authorized!");
+        }
         if (!request.AccountEmail.IsValidEmail())
         {
             return BadRequest("Invalid email format.");
