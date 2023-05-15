@@ -5,6 +5,11 @@ using CarWebsiteBackend.Exceptions.ProfileExceptions;
 using CarWebsiteBackend.Exceptions.CarExceptions;
 using CarWebsiteBackend.Exceptions.TestDriveExceptions;
 using CarWebsiteBackend.Extensions;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Text;
 
 namespace CarWebsiteBackend.Controllers;
 
@@ -62,9 +67,14 @@ public class TestDriveController : ControllerBase
         }
     }
 
-    [HttpDelete("{Id}")]
+    [HttpDelete("{Id}"),Authorize]
     public async Task<IActionResult> DeleteTestDrive(int Id)
     {
+        string emailClaim = HttpContext.User.FindFirst(ClaimTypes.Email)?.Value;
+            if(emailClaim != await testdriveInterface.GetAccount(Id) && emailClaim != "royalmotorslb@gmail.com")
+            {
+                return Unauthorized("You are not authorized!");
+            }
         try
         {
             await testdriveInterface.DeleteTestDrive(Id);
@@ -82,9 +92,14 @@ public class TestDriveController : ControllerBase
 
     }
 
-    [HttpGet("{Id}")]
+    [HttpGet("{Id}"), Authorize]
     public async Task<ActionResult<TestDrive>> GetTestDriveByTestDriveId(int Id)
     {
+        string emailClaim = HttpContext.User.FindFirst(ClaimTypes.Email)?.Value;
+            if(emailClaim != await testdriveInterface.GetAccount(Id) && emailClaim != "royalmotorslb@gmail.com")
+            {
+                return Unauthorized("You are not authorized!");
+            }
         try
         {
             var test_drive = await testdriveInterface.GetTestDriveByTestDriveId(Id);
@@ -100,9 +115,14 @@ public class TestDriveController : ControllerBase
         }
     }
 
-    [HttpGet("car/{Car_Name}")]
+    [HttpGet("car/{Car_Name}"),Authorize]
     public async Task<ActionResult<List<TestDrive>>> GetAllTestDriveByCarName(string Car_Name)
     {
+        string emailClaim = HttpContext.User.FindFirst(ClaimTypes.Email)?.Value;
+            if(emailClaim != "royalmotorslb@gmail.com")
+            {
+                return Unauthorized("You are not authorized!");
+            }
         try
         {
             var test_drives = await testdriveInterface.GetAllTestDriveByCarName(Car_Name);
@@ -119,9 +139,14 @@ public class TestDriveController : ControllerBase
 
     }
 
-    [HttpGet("account/{Account_Email}")]
+    [HttpGet("account/{Account_Email}"), Authorize]
     public async Task<ActionResult<List<TestDrive>>> GetAllTestDriveByAccountEmail(string Account_Email)
     {
+        string emailClaim = HttpContext.User.FindFirst(ClaimTypes.Email)?.Value;
+            if(emailClaim != Account_Email && emailClaim != "royalmotorslb@gmail.com")
+            {
+                return Unauthorized("You are not authorized!");
+            }
         if (!Account_Email.IsValidEmail())
         {
             return BadRequest("Invalid email format.");
@@ -141,9 +166,14 @@ public class TestDriveController : ControllerBase
         }
     }
 
-    [HttpGet]
+    [HttpGet,Authorize]
     public async Task<ActionResult<List<TestDrive>>> GetAllTestDrives()
     {
+        string emailClaim = HttpContext.User.FindFirst(ClaimTypes.Email)?.Value;
+            if(emailClaim != "royalmotorslb@gmail.com")
+            {
+                return Unauthorized("You are not authorized!");
+            }
         try
         {
             var test_drives = await testdriveInterface.GetAllTestDrives();
