@@ -28,7 +28,7 @@ public class TestDriveController : ControllerBase
         this.carStore = carStore;
     }
 
-    [HttpPost]
+    [HttpPost, Authorize]
     public async Task<ActionResult<TestDrive>> AddTestDrive(TestDriveRequest request)
     {
         if (!request.AccountEmail.IsValidEmail())
