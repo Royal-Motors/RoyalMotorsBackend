@@ -2,18 +2,8 @@
 using CarWebsiteBackend.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using CarWebsiteBackend.Exceptions.CarExceptions;
-using CarWebsiteBackend.Exceptions.ProfileExceptions;
-using CarWebsiteBackend.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
-using System.Collections.Generic;
-using System.Collections;
-using CarWebsiteBackend.Storage;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Text;
-
-
 
 namespace CarWebsiteBackend.Controllers;
 
@@ -25,15 +15,25 @@ public class CarController : ControllerBase
     private readonly ITestDriveInterface testdriveStore;
     private readonly IAccountInterface accountStore;
     private readonly IImageInterface imageStore;
+    private readonly ISaleStore saleStore;
 
 
     public CarController(CarInterface carInterface, ITestDriveInterface testdriveInterface,
-        IAccountInterface accountStore, IImageInterface imageStore)
+        IAccountInterface accountStore, IImageInterface imageStore, ISaleStore saleStore)
     {
         this.carStore = carInterface;
         this.testdriveStore = testdriveInterface;
         this.accountStore = accountStore;
         this.imageStore = imageStore;
+        this.saleStore = saleStore;
+    }
+
+    private async Task RemoveCarAndImages(string carname)
+    {
+        var imageIDs = await GetImageIDs(carname);
+        await Task.WhenAll(carStore.DeleteCar(carname),
+                            imageStore.DeleteAllImages(imageIDs)
+        );
     }
 
     [HttpPost, Authorize]
@@ -107,10 +107,7 @@ public class CarController : ControllerBase
         }
         try
         {
-            var imageIDs = await GetImageIDs(name);
-            await Task.WhenAll(carStore.DeleteCar(name),
-                                imageStore.DeleteAllImages(imageIDs)
-            );
+            await RemoveCarAndImages(name);
             return Ok("Car successfully deleted");
         }
         
@@ -124,25 +121,32 @@ public class CarController : ControllerBase
         }
     }
 
-    [HttpDelete("sell/{name}"),Authorize]
-    public async Task<IActionResult> SellCar(string name)
+    [HttpDelete("sell"),Authorize]
+    public async Task<IActionResult> SellCar(Sale sale)
     {
+        string name = sale.CarName;
+        string email = sale.Email;
+
         string emailClaim = HttpContext.User.FindFirst(ClaimTypes.Email)?.Value;
-            if(emailClaim != "royalmotorslb@gmail.com")
-            {
-                return Unauthorized("You are not authorized!");
-            }
+        if(emailClaim != "royalmotorslb@gmail.com")
+        {
+            return Unauthorized("You are not authorized!");
+        }
         try
         {
-            List<TestDrive> testDrivesList = await testdriveStore.GetAllTestDriveByCarName(name);
-            var imageIDs = await GetImageIDs(name);
-            await Task.WhenAll(carStore.SellCar(name),
-                                imageStore.DeleteAllImages(imageIDs)
-            );
-            foreach (TestDrive testDrive in testDrivesList)
+            await accountStore.GetAccount(email);
+            await carStore.GetCar(name);
+            await saleStore.AddSale(sale);
+            try
             {
-                Email.Email.sendEmail(testDrive.Account.email, name + " Car Has Been Sold", HTMLContent.HTMLContent.CarSoldEmail(testDrive.Account.firstname + " " + testDrive.Account.lastname, name));
+                List<TestDrive> testDrivesList = await testdriveStore.GetAllTestDriveByCarName(name);
+                foreach (TestDrive testDrive in testDrivesList)
+                {
+                    Email.Email.sendEmail(testDrive.Account.email, name + " Car Has Been Sold", HTMLContent.HTMLContent.CarSoldEmail(testDrive.Account.firstname + " " + testDrive.Account.lastname, name));
+                }
             }
+            catch { }
+            await RemoveCarAndImages(name);
             return Ok("Car successfully counted Sold");
         }
 
