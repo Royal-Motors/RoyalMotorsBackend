@@ -36,4 +36,18 @@ public static class StringExtension
             return false;
         }
     }
+
+    public static bool IsPhoneNumberValid(this string phoneNumber)
+    {
+        try
+        {
+            return Regex.IsMatch(phoneNumber,
+                @"^\+?\d{1,4}?\s?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,9}$",
+                RegexOptions.None, TimeSpan.FromMilliseconds(250));
+        }
+        catch (RegexMatchTimeoutException)
+        {
+            return false;
+        }
+    }
 }

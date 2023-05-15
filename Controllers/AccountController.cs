@@ -51,7 +51,8 @@ public class AccountController : ControllerBase
         try
         {
             string code = Guid.NewGuid().ToString("N");
-            var account = new Account(create_account.email, BCrypt.Net.BCrypt.HashPassword(create_account.password), create_account.firstname, create_account.lastname, false, code);
+            var account = new Account(create_account.email, BCrypt.Net.BCrypt.HashPassword(create_account.password), create_account.firstname, create_account.lastname,
+                            create_account.phoneNumber, create_account.address, false, code);
             await accountInterface.AddAccount(account);
             string link = $"https://royalmotors.azurewebsites.net/account/verify/{create_account.email}/{code}";
             Email.Email.sendEmail(account.email, "Verification Code", HTMLContent.HTMLContent.emailBody(link));
@@ -163,7 +164,8 @@ public class AccountController : ControllerBase
         }
         try
         {
-            Account new_acc = new Account(email, BCrypt.Net.BCrypt.HashPassword(editedAcc.password), editedAcc.firstname, editedAcc.lastname);
+            Account new_acc = new Account(email, BCrypt.Net.BCrypt.HashPassword(editedAcc.password), editedAcc.firstname, editedAcc.lastname,
+                                editedAcc.phonNumber, editedAcc.password);
             await accountInterface.ReplaceAccount(new_acc);
             return CreatedAtAction(nameof(Edit), new { email = new_acc.email }, new_acc);
         }
