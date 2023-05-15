@@ -37,7 +37,7 @@ public static class StringExtension
         }
     }
 
-    public static bool IsPhoneNumberValid(this string phoneNumber)
+    public static bool IsValidPhoneNumber(this string phoneNumber)
     {
         try
         {

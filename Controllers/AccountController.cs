@@ -48,6 +48,10 @@ public class AccountController : ControllerBase
         {
             return BadRequest("Invalid password: at least 8 characters, 1 number, and one special character.");
         }
+        if(!string.IsNullOrWhiteSpace(create_account.phoneNumber) && !create_account.phoneNumber.IsValidPhoneNumber())
+        {
+            return BadRequest("Invalid phone number format");
+        }
         try
         {
             string code = Guid.NewGuid().ToString("N");
@@ -157,6 +161,10 @@ public class AccountController : ControllerBase
         {
             return BadRequest("Invalid password: at least 8 characters, 1 number, and one special character.");
         }
+        if (!string.IsNullOrWhiteSpace(editedAcc.phoneNumber) && !editedAcc.phoneNumber.IsValidPhoneNumber())
+        {
+            return BadRequest("Invalid phone number format");
+        }
         string emailClaim = HttpContext.User.FindFirst(ClaimTypes.Email)?.Value;
         if(emailClaim != email && emailClaim != "royalmotorslb@gmail.com")
         {
@@ -165,7 +173,7 @@ public class AccountController : ControllerBase
         try
         {
             Account new_acc = new Account(email, BCrypt.Net.BCrypt.HashPassword(editedAcc.password), editedAcc.firstname, editedAcc.lastname,
-                                editedAcc.phonNumber, editedAcc.password);
+                                editedAcc.phoneNumber, editedAcc.password);
             await accountInterface.ReplaceAccount(new_acc);
             return CreatedAtAction(nameof(Edit), new { email = new_acc.email }, new_acc);
         }
