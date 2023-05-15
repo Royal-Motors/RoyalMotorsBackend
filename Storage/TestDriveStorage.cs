@@ -195,6 +195,7 @@ namespace CarWebsiteBackend.Storage
             long[] timeSlotsArray = timeSlots.ToArray();
 
             return timeSlots;
+        }
             
         public async Task<string> GetAccount(int Id)
         {
