@@ -1,14 +1,7 @@
-﻿using CarWebsiteBackend.DTOs;
-using CarWebsiteBackend.Exceptions.CarExceptions;
-using CarWebsiteBackend.Interfaces;
+﻿using CarWebsiteBackend.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Text;
 using Microsoft.AspNetCore.Authorization;
-using CarWebsiteBackend.Exceptions;
-
-using CarWebsiteBackend.Exceptions.ProfileExceptions;
 namespace CarWebsiteBackend.Controllers
 {
     [ApiController]
@@ -16,46 +9,10 @@ namespace CarWebsiteBackend.Controllers
     public class DashboardController : ControllerBase
     {
         private readonly ISaleStore saleStore;
-        private readonly CarInterface carStore;
-        private readonly ITestDriveInterface testdriveInterface;
-        private readonly IAccountInterface accountStore;
 
-
-        public DashboardController(ISaleStore saleStore, CarInterface carStore, ITestDriveInterface testdriveInterface, IAccountInterface accountStore)
+        public DashboardController(ISaleStore saleStore)
         {
             this.saleStore = saleStore;
-            this.carStore = carStore;
-            this.testdriveInterface = testdriveInterface;
-            this.accountStore = accountStore;
-        }
-
-        [HttpPost, Authorize]
-        public async Task<ActionResult> AddSale(Sale sale)
-        {
-            string emailClaim = HttpContext.User.FindFirst(ClaimTypes.Email)?.Value;
-            if(emailClaim != "royalmotorslb@gmail.com")
-            {
-                return Unauthorized("You are not authorized to edit this account.");
-            }
-            try
-            {
-                await accountStore.GetAccount(sale.Email);
-                await carStore.GetCar(sale.CarName);
-                await saleStore.AddSale(sale);
-                return CreatedAtAction(nameof(AddSale), new { }, sale);
-            }
-            catch (Exception ex)
-            {
-                if(ex is ProfileNotFoundException)
-                {
-                    return NotFound($"Account with email {sale.Email} not found");
-                }
-                else if(ex is CarNotFoundException)
-                {
-                    return NotFound($"Car {sale.CarName} not found");
-                }
-                throw;
-            }
         }
 
         [HttpGet("sales/day/{unixTime}"), Authorize]
