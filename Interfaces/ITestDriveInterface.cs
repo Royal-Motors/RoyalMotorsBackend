@@ -3,7 +3,7 @@ namespace CarWebsiteBackend.Interfaces;
 
 public interface ITestDriveInterface
 {
-    Task AddTestDrive(TestDrive test_drive);            // Used for adding a TestDrive, returns error if TestDrive already requasted
+    Task AddTestDrive(TestDrive test_drive);
     Task DeleteTestDrive(int Id);
     Task<TestDrive> GetTestDriveByTestDriveId(int Id);
     Task<List<TestDrive>> GetAllTestDriveByCarName(string CarName);
