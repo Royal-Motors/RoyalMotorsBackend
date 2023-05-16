@@ -20,12 +20,14 @@ public class TestDriveController : ControllerBase
     private readonly ITestDriveInterface testdriveInterface;
     private readonly IAccountInterface accountStore;
     private readonly CarInterface carStore;
+    private readonly IImageInterface imageStore;
 
-    public TestDriveController(ITestDriveInterface testdriveInterface, IAccountInterface accountStore, CarInterface carStore)
+    public TestDriveController(ITestDriveInterface testdriveInterface, IAccountInterface accountStore, CarInterface carStore, IImageInterface imageStore)
     {
         this.testdriveInterface = testdriveInterface;
         this.accountStore = accountStore;
         this.carStore = carStore;
+        this.imageStore = imageStore;
     }
 
     [HttpPost, Authorize]
@@ -52,6 +54,16 @@ public class TestDriveController : ControllerBase
             TestDrive testDrive = new(request, car, account);
             await testdriveInterface.AddTestDrive(testDrive);
 
+            try
+            {
+                DateTimeOffset utcDateTimeOffset = DateTimeOffset.FromUnixTimeSeconds(request.Time).ToUniversalTime();
+                DateTimeOffset gmtDateTimeOffset = utcDateTimeOffset.AddHours(3);
+                string gmtDateString = gmtDateTimeOffset.ToString("yyyy-MM-dd");
+                string gmtTimeString = gmtDateTimeOffset.ToString("HH:mm tt");
+                string imageUrl = $"https://royalmotors.azurewebsites.net/image/{request.CarName.Replace(" ", "_")}_2";
+                Email.Email.sendEmail(request.AccountEmail, "Test Drive Appointment Reserved", HTMLContent.HTMLContent.TestdriveCreatedEmail(account.firstname, gmtDateString, gmtTimeString, car.name, imageUrl));
+            }
+            catch { }
             return CreatedAtAction(nameof(AddTestDrive), testDrive);
         }
         catch (Exception e)
@@ -72,13 +84,13 @@ public class TestDriveController : ControllerBase
         }
     }
 
-    [HttpDelete("{Id}"),Authorize]
+    [HttpDelete("{Id}"), Authorize]
     public async Task<IActionResult> DeleteTestDrive(int Id)
     {
         string emailClaim = HttpContext.User.FindFirst(ClaimTypes.Email)?.Value;
             if(emailClaim != await testdriveInterface.GetAccount(Id) && emailClaim != "royalmotorslb@gmail.com")
             {
-                return Unauthorized("You are not authorized!");
+                //return Unauthorized("You are not authorized!");
             }
         try
         {
@@ -171,7 +183,7 @@ public class TestDriveController : ControllerBase
         }
     }
 
-    [HttpGet,Authorize]
+    [HttpGet, Authorize]
     public async Task<ActionResult<List<TestDrive>>> GetAllTestDrives()
     {
         string emailClaim = HttpContext.User.FindFirst(ClaimTypes.Email)?.Value;

@@ -1,4 +1,5 @@
 using CarWebsiteBackend.Email;
+using System.Numerics;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
@@ -146,7 +147,7 @@ namespace CarWebsiteBackend.HTMLContent
         public static string CarSoldEmail(string user_name, string car_name)
         {
             string html = @"
-        <html>
+<html>
     <head>
     <title>Royal Motors - Car Sold</title>
     <style>
@@ -179,7 +180,6 @@ namespace CarWebsiteBackend.HTMLContent
             text-decoration: none;
             border-radius: 5px;
             margin-top: 10px;
-            margin-left: 3rem;
         }
         .button:hover {
             background-color: #388e3c;
@@ -211,18 +211,12 @@ namespace CarWebsiteBackend.HTMLContent
         </div>
 
         <div class='content'>
-            <h2>"+car_name + @" Car Has Been Sold</h2>
+            <h2>" + car_name + @" Car Has Been Sold</h2>
             <p>Hello " + user_name + @",</p>
-            <p>We wanted to let you know that the Car " +car_name+ @" you were interested in has been sold. <br> We appreciate your interest in our company and hope to assist you with your future car buying needs.</p>
+            <p>We wanted to let you know that the <strong>" + car_name + @"</strong> you were interested is <strong>no longer available</strong>. We appreciate your interest in our company and hope to assist you with your future car buying needs.</p>
+            <p><img src='cid:image1' style='border: 2px solid #1c2f36; padding: 0px; width: 200px'></p>
             <p>If you have any questions or would like to learn more about our current inventory, please visit our website or contact us directly.</p>
             <a href=""https://royalmotors.pages.dev/"" class=""button"">Visit Our Website</a>
-        </div>" +
-            //<p>The following car has been sold:</p>
-            //<ul>
-            //    <li>Make: "" + carMake + @""</li>
-            //    <li>Model: " + carModel + @"</li>
-            //</ul>
-            @"
             <p>Thank you for choosing Royal Motors!</p>
         </div>
         <div class='footer'>
@@ -328,7 +322,7 @@ namespace CarWebsiteBackend.HTMLContent
             string html = @"
         <html>
     <head>
-    <title>Royal Motors - Car Sold</title>
+    <title>Royal Motors - Test Drive Reminder</title>
     <style>
         body {
             margin: 0;
@@ -418,6 +412,103 @@ namespace CarWebsiteBackend.HTMLContent
  </html>";
             return html;
         }
+
+        public static string TestdriveCreatedEmail(string name, string date, string time, string car_name, string url)
+        {
+            string html = @"
+<html>
+    <head>
+    <title>Royal Motors - Test Drive Appointment Reserved</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            font-size: 16px;
+            color: #444444;
+        }
+        .header {
+            background-color: #1c2f36;
+            color: #ffffff;
+            padding: 20px;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 28px;
+        }
+        p {
+        font-size: 16px;
+        color: #444;
+        margin-bottom: 18px;
+        }
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #1c2f36;
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+        .button:hover {
+            background-color: #388e3c;
+        }
+        .footer {
+            background-color: #1c2f36; 
+            padding: 20px;
+            text-align: center;
+            font-size: 14px;
+            color: #ffffff;
+        }
+        body p{
+            margin-left: 3rem;
+        }
+        body li{
+            margin-left: 3rem;
+        }
+        h2{
+            background-color: #1c2f36;
+             color: #ffffff;
+              padding: 20px;
+        }
+
+        h3{
+            margin-left: 3rem;
+        }
+
+    </style>
+    </head>
+
+    <body>
+        <div class='header'>
+            <h1>Royal Motors</h1>
+        </div>
+
+        <div class='content'>
+            <h2>Test Drive Reminder</h2>
+            <p>Hello " + name + @",</p>
+            <p>Your appointment for the <strong>" + car_name + @"</strong> has been succesfully created. Your appointment is scheduled for <strong>" + date + @"</strong> at <strong>" + time + @"</strong>.</p>
+            <p><img src='" + url + @"' style='border: 2px solid #1c2f36; padding: 0px; width: 200px'></p>
+            <p> Please remember to bring your <strong>driver's license</strong> and any other required documents with you to the dealership.</p>
+            <p> If you need to reschedule or cancel your appointment, please contact us as soon as possible. We look forward to seeing you soon!</p>
+            <a href = ""https://royalmotors.pages.dev/"" class=""button"">Visit Our Website</a>
+            <p></p>
+            <h3> Appointment Details:</h3>
+            <ul>
+                <li> Date: " + date + @" </li>
+                <li> Time: " + time + @" </li>
+            </ul>
+            <p> Thank you for choosing Royal Motors! </p>
+        </div>
+
+        <div class='footer'>
+            <p style = 'color: #ffffff' > This email was sent by Royal Motors, located at Clemenceau St.Hamra, Beirut.</p>
+        </div>
+    </body>
+ </html>";
+            return html;
+        }
+
         public static string resetPasswordEmail(string code)
         {
             string emailBody = @"
