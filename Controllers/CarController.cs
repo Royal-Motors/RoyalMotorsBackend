@@ -5,6 +5,7 @@ using CarWebsiteBackend.Exceptions.CarExceptions;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 using Azure.Core;
+using CarWebsiteBackend.Exceptions.ProfileExceptions;
 
 namespace CarWebsiteBackend.Controllers;
 
@@ -149,6 +150,10 @@ public class CarController : ControllerBase
             if (e is CarNotFoundException)
             {
                 return NotFound($"Car with name {name} not found.");
+            }
+            if (e is ProfileNotFoundException)
+            {
+                return NotFound($"Account with email {email} not found.");
             }
             throw;
         }
