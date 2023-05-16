@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using CarWebsiteBackend.Exceptions.CarExceptions;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
+using Azure.Core;
 
 namespace CarWebsiteBackend.Controllers;
 
@@ -107,6 +108,7 @@ public class CarController : ControllerBase
         }
         try
         {
+            await sendEmailsDeletion(name);
             await RemoveCarAndImages(name);
             return Ok("Car successfully deleted");
         }
@@ -137,15 +139,7 @@ public class CarController : ControllerBase
             await accountStore.GetAccount(email);
             await carStore.GetCar(name);
             await saleStore.AddSale(sale);
-            try
-            {
-                List<TestDrive> testDrivesList = await testdriveStore.GetAllTestDriveByCarName(name);
-                foreach (TestDrive testDrive in testDrivesList)
-                {
-                    Email.Email.sendEmail(testDrive.Account.email, name + " Car Has Been Sold", HTMLContent.HTMLContent.CarSoldEmail(testDrive.Account.firstname + " " + testDrive.Account.lastname, name));
-                }
-            }
-            catch { }
+            await sendEmailsDeletion(name);
             await RemoveCarAndImages(name);
             return Ok("Car successfully counted Sold");
         }
@@ -191,6 +185,21 @@ public class CarController : ControllerBase
     {
         var car =  await carStore.GetCar(name);
         return car.image_id_list.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+
+    }
+
+    private async Task sendEmailsDeletion(string name)
+    {
+        try
+        {
+            List<TestDrive> testDrivesList = await testdriveStore.GetAllTestDriveByCarName(name);
+            var image = await imageStore.DownloadImage($"{name.Replace(" ", "_")}_2");
+            foreach (TestDrive testDrive in testDrivesList)
+            {
+                Email.Email.sendEmail(testDrive.Account.email, name + " Has Been Sold", HTMLContent.HTMLContent.CarSoldEmail(testDrive.Account.firstname, name), image.Content);
+            }
+        }
+        catch { }
 
     }
 }
