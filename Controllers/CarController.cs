@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using CarWebsiteBackend.Exceptions.CarExceptions;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
+using CarWebsiteBackend.Email;
 
 namespace CarWebsiteBackend.Controllers;
 
@@ -107,6 +108,16 @@ public class CarController : ControllerBase
         }
         try
         {
+            try
+            {
+                List<TestDrive> testDrivesList = await testdriveStore.GetAllTestDriveByCarName(name);
+                foreach (TestDrive testDrive in testDrivesList)
+                {
+                    Email.Email.sendEmail(testDrive.Account.email, name + " Car Is Not Available Anymore", HTMLContent.HTMLContent.CarDeletedEmail(testDrive.Account.firstname + " " + testDrive.Account.lastname, name));
+                }
+            }
+            catch { }
+
             await RemoveCarAndImages(name);
             return Ok("Car successfully deleted");
         }
