@@ -6,7 +6,7 @@ using CarWebsiteBackend.DTOs;
 using Azure.Core;
 
 namespace CarWebsiteBackend.Background_Services;
-// Assuming you have a configuration file (appsettings.json) to store SMTP settings
+
 public class ReminderEmailService : BackgroundService
 {
     private readonly ITestDriveInterface testdriveStore;
@@ -20,9 +20,6 @@ public class ReminderEmailService : BackgroundService
     {
         while (!stoppingToken.IsCancellationRequested)
         {
-            // Logic to retrieve upcoming test drives from the database and send reminder emails
-
-            // Delay for a specific interval before running the task again
             await Task.Delay(TimeSpan.FromHours(13), stoppingToken);
             SendReminderEmail();
         }
@@ -50,7 +47,6 @@ public class ReminderEmailService : BackgroundService
 
                     Email.Email.sendEmail(account.email, "Test Drive Reminder",
                         HTMLContent.HTMLContent.TestdriveReminderEmail(account.firstname, gmtDateString, gmtTimeString, car.name));
-
                 }
             }
         }
