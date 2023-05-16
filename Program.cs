@@ -1,26 +1,25 @@
 using Azure.Storage.Blobs;
-using CarWebsiteBackend.Configuration;
-using CarWebsiteBackend.Controllers;
 using CarWebsiteBackend.Data;
 using CarWebsiteBackend.Interfaces;
 using CarWebsiteBackend.Storage;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using CarWebsiteBackend.Background_Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container
 
 builder.Services.AddControllers();
-builder.Services.AddDbContext<DataContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("SqlConnection")));
-builder.Services.AddScoped<IAccountInterface, AccountStorage>();
-builder.Services.AddScoped<CarInterface, CarStorage>();
-builder.Services.AddScoped<ITestDriveInterface, TestDriveStorage>();
-builder.Services.AddScoped<ISaleStore, SaleStorage>();
+builder.Services.AddDbContext<DataContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("SqlConnection")),
+    contextLifetime: ServiceLifetime.Singleton, optionsLifetime: ServiceLifetime.Singleton);
+builder.Services.AddSingleton<IAccountInterface, AccountStorage>();
+builder.Services.AddSingleton<CarInterface, CarStorage>();
+builder.Services.AddSingleton<ITestDriveInterface, TestDriveStorage>();
+builder.Services.AddSingleton<ISaleStore, SaleStorage>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -73,6 +72,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("thisisasecretkey@123"))
     };
 });
+
+builder.Services.AddHostedService<ReminderEmailService>();
 
 var app = builder.Build();
 
