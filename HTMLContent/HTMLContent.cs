@@ -391,16 +391,16 @@ public static class HTMLContent
             <p>Please remember to bring your driver's license and any other required documents with you to the dealership</p> <br>
             <p>If you need to reschedule or cancel your appointment, please contact us as soon as possible. We look forward to seeing you soon!</p>
             <a href=""https://royalmotors.pages.dev/"" class=""button"">Visit Our Website</a>
-        </ div >
-            < h3 > Appointment Details:</ h3 >
-            < ul >
-                < li > Date: " + date + @" </ li >
-                < li > Time: " + time + @" </ li >
-            </ ul >
-            < p > Thank you for choosing Royal Motors! </ p >
-        </ div >
+        </div>
+            <h3> Appointment Details:</h3>
+            <ul>
+                <li> Date: " + date + @" </li>
+                <li> Time: " + time + @" </li>
+            </ul>
+            <p> Thank you for choosing Royal Motors! </p>
+        </div>
 
-        < div class='footer'>
+        <div class='footer'>
             <p style = 'color: #ffffff' > This email was sent by Royal Motors, located at Clemenceau St. Hamra, Beirut.</p>
         </div>
     </body>
