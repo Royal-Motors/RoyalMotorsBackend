@@ -227,6 +227,96 @@ namespace CarWebsiteBackend.HTMLContent
             return html;
         }
 
+        public static string CarDeletedEmail(string user_name, string car_name)
+        {
+            string html = @"
+        <html>
+    <head>
+    <title>Royal Motors - Test Drive Has Been Canceled</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            font-size: 16px;
+            color: #444444;
+        }
+        .header {
+            background-color: #1c2f36;
+            color: #ffffff;
+            padding: 20px;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 28px;
+        }
+        p {
+        font-size: 16px;
+        color: #444;
+        margin-bottom: 18px;
+        }
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #1c2f36;
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 10px;
+            margin-left: 3rem;
+        }
+        .button:hover {
+            background-color: #388e3c;
+        }
+        .footer {
+            background-color: #1c2f36; 
+            padding: 20px;
+            text-align: center;
+            font-size: 14px;
+            color: #ffffff;
+        }
+        body p{
+            margin-left: 3rem;
+        }
+        body li{
+            margin-left: 3rem;
+        }
+        h2{
+        background-color: #1c2f36;
+         color: #ffffff;
+          padding: 20px;
+        }
+    </style>
+    </head>
+
+    <body>
+        <div class='header'>
+            <h1>Royal Motors</h1>
+        </div>
+
+        <div class='content'>
+            <h2>" + car_name + @" Car Is Not Available Anymore</h2>
+            <p>Hello " + user_name + @",</p>
+            <p>We wanted to let you know that the Car " + car_name + @" you were interested is not available anymore. <br> We appreciate your interest in our company and hope to assist you with your future car buying needs.</p>
+            <p>If you have any questions or would like to learn more about our current inventory, please visit our website or contact us directly.</p>
+            <a href=""https://royalmotors.pages.dev/"" class=""button"">Visit Our Website</a>
+        </div>" +
+            //<p>The following car is not available anymore:</p>
+            //<ul>
+            //    <li>Make: "" + carMake + @""</li>
+            //    <li>Model: " + carModel + @"</li>
+            //</ul>
+            @"
+            <p>Thank you for choosing Royal Motors!</p>
+        </div>
+        <div class='footer'>
+            <p style='color: #ffffff'>This email was sent by Royal Motors, located at Clemenceau St. Hamra, Beirut.</p>
+        </div>
+    </body>
+        </html>";
+            return html;
+        }
+
         public static string TestdriveReminderEmail(string name, string date, string time, string car_name)
         {
             string html = @"
