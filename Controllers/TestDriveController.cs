@@ -94,6 +94,13 @@ public class TestDriveController : ControllerBase
             }
         try
         {
+            //try
+            //{
+            //    Email.Email.sendEmail(await testdriveInterface.GetAccount(Id), "Your Test Drive Has Been Canceled", HTMLContent.HTMLContent.TestDriveCanceledEmail(testdriveInterface.GetAccountFirstname(Id) + " " + testdriveInterface.GetAccountLastname(Id), "BMW"));
+            //}
+            //catch { }
+            //await testdriveInterface.DeleteTestDrive(Id);
+            //return Ok("TestDrive successfully deleted");
             await testdriveInterface.DeleteTestDrive(Id);
             return Ok("TestDrive successfully deleted");
         }
@@ -108,6 +115,7 @@ public class TestDriveController : ControllerBase
         }
 
     }
+
 
     [HttpGet("{Id}"), Authorize]
     public async Task<ActionResult<TestDrive>> GetTestDriveByTestDriveId(int Id)

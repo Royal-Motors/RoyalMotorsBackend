@@ -11,4 +11,6 @@ public interface ITestDriveInterface
     Task<List<TestDrive>> GetAllTestDrives();
     Task<List<long>> GetAllAvailableSlots(string CarName);
     Task<string> GetAccount(int Id);
+    Task<string> GetAccountFirstname(int Id);
+    Task<string> GetAccountLastname(int Id);
 }
