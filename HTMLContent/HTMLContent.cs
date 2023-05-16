@@ -1,15 +1,10 @@
-using CarWebsiteBackend.Email;
-using System.Numerics;
-using System.Runtime.InteropServices;
-using System.Threading.Tasks;
+namespace CarWebsiteBackend.HTMLContent;
 
-namespace CarWebsiteBackend.HTMLContent
+public static class HTMLContent
 {
-    public static class HTMLContent
+    public static string emailBody(string link) 
     {
-        public static string emailBody(string link) 
-        {
-            string emailBody = @"
+        string emailBody = @"
             <html>
                 <head>
                 <title>Royal Motors - Email Verification</title>
@@ -76,12 +71,12 @@ namespace CarWebsiteBackend.HTMLContent
                     </div>
                 </body>
             </html>";
-            return emailBody;
-        }
+        return emailBody;
+    }
 
-        public static string verifySuccessWebsite() 
-        {
-            string html = @"
+    public static string verifySuccessWebsite() 
+    {
+        string html = @"
         <html>
             <head>
 	                <title>Email Verified</title>
@@ -97,12 +92,12 @@ namespace CarWebsiteBackend.HTMLContent
 	                </div>
             </body>
         </html>";
-            return html;
-        }
+        return html;
+    }
 
-        public static string verifyFailWebsite()
-        {
-            string html = @"
+    public static string verifyFailWebsite()
+    {
+        string html = @"
         <html>
             <head>
                 <title>Email Verified</title>
@@ -119,12 +114,12 @@ namespace CarWebsiteBackend.HTMLContent
                 </div>
             </body>
         </html>";
-            return html;
-        }
+        return html;
+    }
 
-        public static string alreadyVerifiedWebsite()
-        {
-            string html = @"
+    public static string alreadyVerifiedWebsite()
+    {
+        string html = @"
         <html>
             <head>
                 <title>Email Verified</title>
@@ -141,12 +136,12 @@ namespace CarWebsiteBackend.HTMLContent
                 </div>
             </body>
         </html>";
-            return html;
-        }
+        return html;
+    }
 
-        public static string CarSoldEmail(string user_name, string car_name)
-        {
-            string html = @"
+    public static string CarSoldEmail(string user_name, string car_name)
+    {
+        string html = @"
 <html>
     <head>
     <title>Royal Motors - Car Sold</title>
@@ -224,12 +219,12 @@ namespace CarWebsiteBackend.HTMLContent
         </div>
     </body>
         </html>";
-            return html;
-        }
+        return html;
+    }
 
-        public static string CarDeletedEmail(string user_name, string car_name)
-        {
-            string html = @"
+    public static string CarDeletedEmail(string user_name, string car_name)
+    {
+        string html = @"
         <html>
     <head>
     <title>Royal Motors - Test Drive Has Been Canceled</title>
@@ -301,12 +296,12 @@ namespace CarWebsiteBackend.HTMLContent
             <p>If you have any questions or would like to learn more about our current inventory, please visit our website or contact us directly.</p>
             <a href=""https://royalmotors.pages.dev/"" class=""button"">Visit Our Website</a>
         </div>" +
-            //<p>The following car is not available anymore:</p>
-            //<ul>
-            //    <li>Make: "" + carMake + @""</li>
-            //    <li>Model: " + carModel + @"</li>
-            //</ul>
-            @"
+        //<p>The following car is not available anymore:</p>
+        //<ul>
+        //    <li>Make: "" + carMake + @""</li>
+        //    <li>Model: " + carModel + @"</li>
+        //</ul>
+        @"
             <p>Thank you for choosing Royal Motors!</p>
         </div>
         <div class='footer'>
@@ -314,12 +309,12 @@ namespace CarWebsiteBackend.HTMLContent
         </div>
     </body>
         </html>";
-            return html;
-        }
+        return html;
+    }
 
-        public static string TestdriveReminderEmail(string name, string date, string time, string car_name)
-        {
-            string html = @"
+    public static string TestdriveReminderEmail(string name, string date, string time, string car_name)
+    {
+        string html = @"
         <html>
     <head>
     <title>Royal Motors - Test Drive Reminder</title>
@@ -410,12 +405,12 @@ namespace CarWebsiteBackend.HTMLContent
         </div>
     </body>
  </html>";
-            return html;
-        }
+        return html;
+    }
 
-        public static string TestdriveCreatedEmail(string name, string date, string time, string car_name, string url)
-        {
-            string html = @"
+    public static string TestdriveCreatedEmail(string name, string date, string time, string car_name, string url)
+    {
+        string html = @"
 <html>
     <head>
     <title>Royal Motors - Test Drive Appointment Reserved</title>
@@ -506,12 +501,12 @@ namespace CarWebsiteBackend.HTMLContent
         </div>
     </body>
  </html>";
-            return html;
-        }
+        return html;
+    }
 
-        public static string resetPasswordEmail(string code)
-        {
-            string emailBody = @"
+    public static string resetPasswordEmail(string code)
+    {
+        string emailBody = @"
             <html>
                 <head>
                 <title>Royal Motors - Reset Password</title>
@@ -575,15 +570,15 @@ namespace CarWebsiteBackend.HTMLContent
                     </div>
                 </body>
             </html>";
-            return emailBody;
-        }
+        return emailBody;
+    }
 
-        public static string TestDriveCanceledEmail(string user_name, string car_name)
-        {
-            string html = @"
-        <html>
+    public static string TestDriveCancelledEmail(string name, string date, string time, string car_name, string reason)
+    {
+        string html = @"
+<html>
     <head>
-    <title>Royal Motors - Test Drive Has Been Canceled</title>
+    <title>Royal Motors - Test Drive Cancelled</title>
     <style>
         body {
             margin: 0;
@@ -614,7 +609,6 @@ namespace CarWebsiteBackend.HTMLContent
             text-decoration: none;
             border-radius: 5px;
             margin-top: 10px;
-            margin-left: 3rem;
         }
         .button:hover {
             background-color: #388e3c;
@@ -633,10 +627,15 @@ namespace CarWebsiteBackend.HTMLContent
             margin-left: 3rem;
         }
         h2{
-        background-color: #1c2f36;
-         color: #ffffff;
-          padding: 20px;
+            background-color: #1c2f36;
+             color: #ffffff;
+              padding: 20px;
         }
+
+        h3{
+            margin-left: 3rem;
+        }
+
     </style>
     </head>
 
@@ -646,26 +645,21 @@ namespace CarWebsiteBackend.HTMLContent
         </div>
 
         <div class='content'>
-            <h2>Your Test Drive for the Car" + car_name + @" Is Canceled.</h2>
-            <p>Hello " + user_name + @",</p>
-            <p>We wanted to let you know that your test drive for the Car " + car_name + @" Is Canceled. <br> We appreciate your interest in our company and hope to assist you with your future car buying needs.</p>
-            <p>If you have any questions or would like to learn more about our current inventory, please visit our website or contact us directly.</p>
-            <a href=""https://royalmotors.pages.dev/"" class=""button"">Visit Our Website</a>
-        </div>" +
-            //<p>The following car is not available anymore:</p>
-            //<ul>
-            //    <li>Make: "" + carMake + @""</li>
-            //    <li>Model: " + carModel + @"</li>
-            //</ul>
-            @"
-            <p>Thank you for choosing Royal Motors!</p>
+            <h2>Your Test Drive Has Been Cancelled</h2>
+            <p>Hello " + name + @",</p>
+            <p>Your test drive of the <strong>" + car_name + @"</strong> on <strong>" + date + @"</strong> at <strong>" + time + @"</strong> has been cancelled by Royal Motors for the following reason:</p>
+             <p>" + reason + @"</p>
+            <p> We sincerely apologize for the inconvenience.</p>
+            <p> If you would like to reschedule your test drive, please do so through the Royal Motors website. Feel free to contact us if you have any questions.</p>
+            <a href = ""https://royalmotors.pages.dev/"" class=""button"">Visit Our Website</a>
+            <p> Thank you for choosing Royal Motors! </p>
         </div>
+
         <div class='footer'>
-            <p style='color: #ffffff'>This email was sent by Royal Motors, located at Clemenceau St. Hamra, Beirut.</p>
+            <p style = 'color: #ffffff' > This email was sent by Royal Motors, located at Clemenceau St.Hamra, Beirut.</p>
         </div>
     </body>
-        </html>";
-            return html;
-        }
+ </html>";
+        return html;
     }
 }

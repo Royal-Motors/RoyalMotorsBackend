@@ -7,10 +7,6 @@ using CarWebsiteBackend.Exceptions.TestDriveExceptions;
 using CarWebsiteBackend.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Text;
-
 namespace CarWebsiteBackend.Controllers;
 
 [ApiController]
@@ -85,22 +81,25 @@ public class TestDriveController : ControllerBase
     }
 
     [HttpDelete("{Id}"), Authorize]
-    public async Task<IActionResult> DeleteTestDrive(int Id)
+    public async Task<IActionResult> DeleteTestDrive(int Id, DeleteTestDriveRequest request)
     {
-        string emailClaim = HttpContext.User.FindFirst(ClaimTypes.Email)?.Value;
-            if(emailClaim != await testdriveInterface.GetAccount(Id) && emailClaim != "royalmotorslb@gmail.com")
-            {
-                //return Unauthorized("You are not authorized!");
-            }
         try
         {
-            //try
-            //{
-            //    Email.Email.sendEmail(await testdriveInterface.GetAccount(Id), "Your Test Drive Has Been Canceled", HTMLContent.HTMLContent.TestDriveCanceledEmail(testdriveInterface.GetAccountFirstname(Id) + " " + testdriveInterface.GetAccountLastname(Id), "BMW"));
-            //}
-            //catch { }
-            //await testdriveInterface.DeleteTestDrive(Id);
-            //return Ok("TestDrive successfully deleted");
+            var testdrive = await testdriveInterface.GetTestDriveByTestDriveId(Id);
+            string emailClaim = HttpContext.User.FindFirst(ClaimTypes.Email)?.Value;
+            if (emailClaim == "royalmotorslb@gmail.com")
+            {
+                var account = testdrive.Account;
+                string carname = testdrive.Car.name;
+                string imageUrl = $"https://royalmotors.azurewebsites.net/image/{carname}_2";
+
+                DateTimeOffset utcDateTimeOffset = DateTimeOffset.FromUnixTimeSeconds(testdrive.Time).ToUniversalTime();
+                DateTimeOffset gmtDateTimeOffset = utcDateTimeOffset.AddHours(3);
+                string gmtDateString = gmtDateTimeOffset.ToString("yyyy-MM-dd");
+                string gmtTimeString = gmtDateTimeOffset.ToString("HH:mm tt");
+
+                Email.Email.sendEmail(account.email, "Your Test Drive Has Been Cancelled", HTMLContent.HTMLContent.TestDriveCancelledEmail(account.firstname, gmtDateString, gmtTimeString, carname, request.reason));
+            }
             await testdriveInterface.DeleteTestDrive(Id);
             return Ok("TestDrive successfully deleted");
         }
