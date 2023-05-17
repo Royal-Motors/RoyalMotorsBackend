@@ -14,12 +14,11 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container
 
 builder.Services.AddControllers();
-builder.Services.AddDbContext<DataContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("SqlConnection")),
-    contextLifetime: ServiceLifetime.Singleton, optionsLifetime: ServiceLifetime.Singleton);
-builder.Services.AddSingleton<IAccountInterface, AccountStorage>();
-builder.Services.AddSingleton<CarInterface, CarStorage>();
-builder.Services.AddSingleton<ITestDriveInterface, TestDriveStorage>();
-builder.Services.AddSingleton<ISaleStore, SaleStorage>();
+builder.Services.AddDbContext<DataContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("SqlConnection")));
+builder.Services.AddScoped<IAccountInterface, AccountStorage>();
+builder.Services.AddScoped<CarInterface, CarStorage>();
+builder.Services.AddScoped<ITestDriveInterface, TestDriveStorage>();
+builder.Services.AddScoped<ISaleStore, SaleStorage>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -73,31 +72,33 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
     };
 });
 
-builder.Services.AddHostedService<ReminderEmailService>();
+//builder.Services.AddHostedService<ReminderEmailService>();
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline. 
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    {
+        app.UseSwagger();
+        app.UseSwaggerUI();
+    }
+
+    app.UseRouting();
+    app.UseAuthentication();
+    app.UseAuthorization();
+
+    app.UseEndpoints(endpoints =>
+    {
+        endpoints.MapControllers();
+    });
+
+    app.UseHttpsRedirection();
+
+
+    app.MapControllers();
+
+    app.Run();
 }
-
-app.UseRouting();
-app.UseAuthentication();
-app.UseAuthorization();
-
-app.UseEndpoints(endpoints =>
-{
-    endpoints.MapControllers();
-});
-
-app.UseHttpsRedirection();
-
-
-app.MapControllers();
-
-app.Run();
 
 public partial class Program { }
