@@ -175,7 +175,7 @@ public class AccountController : ControllerBase
             Account new_acc = new Account(email, BCrypt.Net.BCrypt.HashPassword(editedAcc.password), editedAcc.firstname, editedAcc.lastname,
                                 editedAcc.phoneNumber, editedAcc.address);
             await accountInterface.ReplaceAccount(new_acc);
-            return CreatedAtAction(nameof(Edit), new { email = new_acc.email }, new_acc);
+            return Ok(new_acc);
         }
         catch (Exception e)
         { 

@@ -68,13 +68,16 @@ namespace CarWebsiteBackend.Storage
 
         public async Task ReplaceAccount(Account account)
         {
-            var sql = "UPDATE Accounts SET firstname = @NewFirstname, lastname = @NewLastname, password = @NewPassword WHERE email = @Email";
+            var sql = "UPDATE Accounts SET firstname = @NewFirstname, lastname = @NewLastname, password = @NewPassword," +
+                "address = @NewAddress, phoneNumber = @NewPhoneNumber WHERE email = @Email";
             var parameters = new[]
             {
             new SqlParameter("@NewFirstname", account.firstname),
             new SqlParameter("@NewLastname", account.lastname),
             new SqlParameter("@NewPassword", account.password),
-            new SqlParameter("@Email", account.email)
+            new SqlParameter("@Email", account.email),
+            new SqlParameter("@NewAddress", account.address),
+            new SqlParameter("@NewPhoneNumber", account.phoneNumber)
             };
             var rowsAffected = await _context.Database.ExecuteSqlRawAsync(sql, parameters);
             if(rowsAffected <= 0)
