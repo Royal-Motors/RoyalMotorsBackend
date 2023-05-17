@@ -227,7 +227,7 @@ public static class HTMLContent
         string html = @"
         <html>
     <head>
-    <title>Royal Motors - Test Drive Has Been Canceled</title>
+    <title>Royal Motors - Car Sold</title>
     <style>
         body {
             margin: 0;
@@ -258,7 +258,6 @@ public static class HTMLContent
             text-decoration: none;
             border-radius: 5px;
             margin-top: 10px;
-            margin-left: 3rem;
         }
         .button:hover {
             background-color: #388e3c;
@@ -290,18 +289,12 @@ public static class HTMLContent
         </div>
 
         <div class='content'>
-            <h2>" + car_name + @" Car Is Not Available Anymore</h2>
-            <p>Hello " + user_name + @",</p>
-            <p>We wanted to let you know that the Car " + car_name + @" you were interested is not available anymore. <br> We appreciate your interest in our company and hope to assist you with your future car buying needs.</p>
+            <h2>"" + car_name + @"" Car Has Been Sold</h2>
+            <p>Hello "" + user_name + @"",</p>
+            <p>We wanted to let you know that the <strong>"" + car_name + @""</strong> you were interested is <strong>no longer available</strong>. We appreciate your interest in our company and hope to assist you with your future car buying needs.</p>
+            <p><img src='cid:image1' style='border: 2px solid #1c2f36; padding: 0px; width: 200px'></p>
             <p>If you have any questions or would like to learn more about our current inventory, please visit our website or contact us directly.</p>
-            <a href=""https://royalmotors.pages.dev/"" class=""button"">Visit Our Website</a>
-        </div>" +
-        //<p>The following car is not available anymore:</p>
-        //<ul>
-        //    <li>Make: "" + carMake + @""</li>
-        //    <li>Model: " + carModel + @"</li>
-        //</ul>
-        @"
+            <a href=""""https://royalmotors.pages.dev/"""" class=""""button"""">Visit Our Website</a>
             <p>Thank you for choosing Royal Motors!</p>
         </div>
         <div class='footer'>
@@ -315,7 +308,7 @@ public static class HTMLContent
     public static string TestdriveReminderEmail(string name, string date, string time, string car_name)
     {
         string html = @"
-        <html>
+        < html>
     <head>
     <title>Royal Motors - Test Drive Reminder</title>
     <style>
@@ -348,7 +341,6 @@ public static class HTMLContent
             text-decoration: none;
             border-radius: 5px;
             margin-top: 10px;
-            margin-left: 3rem;
         }
         .button:hover {
             background-color: #388e3c;
@@ -388,6 +380,7 @@ public static class HTMLContent
             <h2>Test Drive Reminder</h2>
             <p>Hello " + name +@",</p>
             <p>We wanted to remind you about your upcoming test drive appointment for the Car "+ car_name + @". Your appointment is scheduled for "+ date + @" at "+ time + @".</p>
+            <p><img src='cid:image1' style='border: 2px solid #1c2f36; padding: 0px; width: 200px'></p>
             <p>Please remember to bring your driver's license and any other required documents with you to the dealership</p> <br>
             <p>If you need to reschedule or cancel your appointment, please contact us as soon as possible. We look forward to seeing you soon!</p>
             <a href=""https://royalmotors.pages.dev/"" class=""button"">Visit Our Website</a>
@@ -483,7 +476,7 @@ public static class HTMLContent
             <h2>Test Drive Reminder</h2>
             <p>Hello " + name + @",</p>
             <p>Your appointment for the <strong>" + car_name + @"</strong> has been succesfully created. Your appointment is scheduled for <strong>" + date + @"</strong> at <strong>" + time + @"</strong>.</p>
-            <p><img src='" + url + @"' style='border: 2px solid #1c2f36; padding: 0px; width: 200px'></p>
+            <p><img src='cid:image1' style='border: 2px solid #1c2f36; padding: 0px; width: 200px'></p>
             <p> Please remember to bring your <strong>driver's license</strong> and any other required documents with you to the dealership.</p>
             <p> If you need to reschedule or cancel your appointment, please contact us as soon as possible. We look forward to seeing you soon!</p>
             <a href = ""https://royalmotors.pages.dev/"" class=""button"">Visit Our Website</a>
@@ -535,7 +528,6 @@ public static class HTMLContent
                         text-decoration: none;
                         border-radius: 5px;
                         margin-top: 20px;
-                        margin-left: 3rem;
                         }
                     .button:hover {
                         background-color: #95c197;

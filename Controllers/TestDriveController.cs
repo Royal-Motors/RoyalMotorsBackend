@@ -56,8 +56,8 @@ public class TestDriveController : ControllerBase
                 DateTimeOffset gmtDateTimeOffset = utcDateTimeOffset.AddHours(3);
                 string gmtDateString = gmtDateTimeOffset.ToString("yyyy-MM-dd");
                 string gmtTimeString = gmtDateTimeOffset.ToString("HH:mm tt");
-                string imageUrl = $"https://royalmotors.azurewebsites.net/image/{request.CarName.Replace(" ", "_")}_2";
-                Email.Email.sendEmail(request.AccountEmail, "Test Drive Appointment Reserved", HTMLContent.HTMLContent.TestdriveCreatedEmail(account.firstname, gmtDateString, gmtTimeString, car.name, imageUrl));
+                var image = await imageStore.DownloadImage($"{request.CarName.Replace(" ", "_")}_2");
+                Email.Email.sendEmail(request.AccountEmail, "Test Drive Appointment Reserved", HTMLContent.HTMLContent.TestdriveCreatedEmail(account.firstname, gmtDateString, gmtTimeString, car.name, ""), image.Content);
             }
             catch { }
             return CreatedAtAction(nameof(AddTestDrive), testDrive);

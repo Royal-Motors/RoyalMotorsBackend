@@ -4,16 +4,19 @@ using System.Net.Mail;
 using CarWebsiteBackend.Interfaces;
 using CarWebsiteBackend.DTOs;
 using Azure.Core;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace CarWebsiteBackend.Background_Services;
 
 public class ReminderEmailService : BackgroundService
 {
     private readonly ITestDriveInterface testdriveStore;
+    private readonly IImageInterface imageStore;
 
-    public ReminderEmailService(ITestDriveInterface testdriveStore)
+    public ReminderEmailService(ITestDriveInterface testdriveStore, IImageInterface imageStore)
     {
         this.testdriveStore = testdriveStore;
+        this.imageStore = imageStore;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -44,9 +47,13 @@ public class ReminderEmailService : BackgroundService
                     DateTimeOffset gmtDateTimeOffset = utcDateTimeOffset.AddHours(3);
                     string gmtDateString = gmtDateTimeOffset.ToString("yyyy-MM-dd");
                     string gmtTimeString = gmtDateTimeOffset.ToString("HH:mm tt");
-
-                    Email.Email.sendEmail(account.email, "Test Drive Reminder",
-                        HTMLContent.HTMLContent.TestdriveReminderEmail(account.firstname, gmtDateString, gmtTimeString, car.name));
+                    try
+                    {
+                        var image = await imageStore.DownloadImage($"{testdrive.Car.name.Replace(" ", "_")}_2");
+                        Email.Email.sendEmail(account.email, "Test Drive Reminder",
+                        HTMLContent.HTMLContent.TestdriveReminderEmail(account.firstname, gmtDateString, gmtTimeString, car.name), image.Content);
+                    }
+                    catch { }
                 }
             }
         }
