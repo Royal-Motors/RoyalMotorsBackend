@@ -102,7 +102,7 @@ public class ImageBlobStorage : IImageInterface
                     blobClient = Container.GetBlobClient(image + ".jpeg");
                     if (!await blobClient.ExistsAsync()) // if {id}.jpeg doesn't exist
                     {
-                        throw new ImageNotFoundException();
+                        continue;
                     }
 
                 }
