@@ -83,22 +83,22 @@ if (app.Environment.IsDevelopment())
         app.UseSwagger();
         app.UseSwaggerUI();
     }
-
-    app.UseRouting();
-    app.UseAuthentication();
-    app.UseAuthorization();
-
-    app.UseEndpoints(endpoints =>
-    {
-        endpoints.MapControllers();
-    });
-
-    app.UseHttpsRedirection();
-
-
-    app.MapControllers();
-
-    app.Run();
 }
+
+app.UseRouting();
+app.UseAuthentication();
+app.UseAuthorization();
+
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapControllers();
+});
+
+app.UseHttpsRedirection();
+
+
+app.MapControllers();
+
+app.Run();
 
 public partial class Program { }
