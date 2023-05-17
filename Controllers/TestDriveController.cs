@@ -81,7 +81,7 @@ public class TestDriveController : ControllerBase
     }
 
     [HttpDelete("{Id}"), Authorize]
-    public async Task<IActionResult> DeleteTestDrive(int Id, DeleteTestDriveRequest request)
+    public async Task<IActionResult> DeleteTestDrive(int Id)
     {
         try
         {
@@ -98,7 +98,7 @@ public class TestDriveController : ControllerBase
                 string gmtDateString = gmtDateTimeOffset.ToString("yyyy-MM-dd");
                 string gmtTimeString = gmtDateTimeOffset.ToString("HH:mm tt");
 
-                Email.Email.sendEmail(account.email, "Your Test Drive Has Been Cancelled", HTMLContent.HTMLContent.TestDriveCancelledEmail(account.firstname, gmtDateString, gmtTimeString, carname, request.reason));
+                Email.Email.sendEmail(account.email, "Your Test Drive Has Been Cancelled", HTMLContent.HTMLContent.TestDriveCancelledEmail(account.firstname, gmtDateString, gmtTimeString, carname));
             }
             await testdriveInterface.DeleteTestDrive(Id);
             return Ok("TestDrive successfully deleted");

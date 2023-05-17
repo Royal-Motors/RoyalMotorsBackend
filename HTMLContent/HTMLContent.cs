@@ -565,7 +565,7 @@ public static class HTMLContent
         return emailBody;
     }
 
-    public static string TestDriveCancelledEmail(string name, string date, string time, string car_name, string reason)
+    public static string TestDriveCancelledEmail(string name, string date, string time, string car_name)
     {
         string html = @"
 <html>
@@ -639,10 +639,9 @@ public static class HTMLContent
         <div class='content'>
             <h2>Your Test Drive Has Been Cancelled</h2>
             <p>Hello " + name + @",</p>
-            <p>Your test drive of the <strong>" + car_name + @"</strong> on <strong>" + date + @"</strong> at <strong>" + time + @"</strong> has been cancelled by Royal Motors for the following reason:</p>
-             <p>" + reason + @"</p>
+            <p>Your test drive of the <strong>" + car_name + @"</strong> on <strong>" + date + @"</strong> at <strong>" + time + @"</strong> has been cancelled by Royal Motors.</p>
             <p> We sincerely apologize for the inconvenience.</p>
-            <p> If you would like to reschedule your test drive, please do so through the Royal Motors website. Feel free to contact us if you have any questions.</p>
+            <p>Feel free to contact us if you have any questions. If you would like to reschedule your test drive, please do so through the Royal Motors website.</p>
             <a href = ""https://royalmotors.pages.dev/"" class=""button"">Visit Our Website</a>
             <p> Thank you for choosing Royal Motors! </p>
         </div>
