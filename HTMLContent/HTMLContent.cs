@@ -473,7 +473,7 @@ public static class HTMLContent
         </div>
 
         <div class='content'>
-            <h2>Test Drive Reminder</h2>
+            <h2>Test Drive Appointment Reserved</h2>
             <p>Hello " + name + @",</p>
             <p>Your appointment for the <strong>" + car_name + @"</strong> has been succesfully created. Your appointment is scheduled for <strong>" + date + @"</strong> at <strong>" + time + @"</strong>.</p>
             <p><img src='cid:image1' style='border: 2px solid #1c2f36; padding: 0px; width: 200px'></p>
